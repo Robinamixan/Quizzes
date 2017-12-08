@@ -7,11 +7,11 @@ security:
         in_memory:
             memory:
                 users:
-                    robinam:
-                        password: $2y$13$bYj.ToYV7m7XVV5mKnwRx.o4jI/OuvHkU5HVyEyTA67Hn1XZvH7tO
+                    user:
+                        password: $2y$13$KxF4f8PQctRMqOqE1UBriuUj.Y8x8R7gUXa0BmrtHuNZb8Xr7M3WW
                         roles: 'ROLE_USER'
                     admin:
-                        password: $2y$13$RAx2dITH2UVuh0mHpmZkh.yE7LHrCqlU/0C6rp5MfxbP99BUx2UzG
+                        password: $2y$13$cDn.U7F2iCDYtCQLroznHemChzMJ6zMyYsTdGFqZqp.MRZmmwT8n.
                         roles: 'ROLE_ADMIN'
 
     encoders:

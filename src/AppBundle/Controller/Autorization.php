@@ -23,6 +23,16 @@ class Autorization extends Controller
      */
     public function autorizationAction(Request $request)
     {
-        return new Response("admin");
+        $first = 3;
+        $second = 7;
+        $sum = $first + $second;
+
+        return $this->render("test/test.html.twig",
+            array(
+                'first' => $first,
+                'second' => $second,
+                'sum' => $sum
+            )
+        );
     }
 }
