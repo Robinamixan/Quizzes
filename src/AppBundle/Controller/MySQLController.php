@@ -10,7 +10,7 @@ namespace AppBundle\Controller;
 
 
 
-use AppBundle\Entity\Product;
+use AppBundle\Entity\Access;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -32,20 +32,25 @@ class MySQLController extends Controller
         // or you can add an argument to your action: createAction(EntityManagerInterface $em)
         $em = $this->getDoctrine()->getManager();
 
-        $product = new User();
-        $product->setUsername('n.usian');
-        $product->setPassword('22222');
-        $product->setEmail('n.usian@test.loc');
-        $product->setFullName('Nikola Usian');
-        $product->setAccess(2);
+        $user = new User();
+        $user->setUsername('n.usiand');
+        $user->setPassword('22222');
+        $user->setEmail('n.usiand@test.loc');
+        $user->setFullName('Nikola Usian');
+
+        $access = $this->getDoctrine()
+            ->getRepository(Access::class)
+            ->find(2);
+
+        $user->setAccess($access);
 
         // tells Doctrine you want to (eventually) save the Product (no queries yet)
-        $em->persist($product);
+        $em->persist($user);
 
         // actually executes the queries (i.e. the INSERT query)
         $em->flush();
 
-        return new Response('Saved new product with id '.$product->getId_user());
+        return new Response('Saved new product with id '.$user->getIdUser());
     }
 
     // if you have multiple entity managers, use the registry to fetch them
@@ -65,16 +70,16 @@ class MySQLController extends Controller
     {
         $id_user = 2;
 
-        $product = $this->getDoctrine()
+        $user = $this->getDoctrine()
             ->getRepository(User::class)
             ->find($id_user);
 
-        if (!$product) {
+        if (!$user) {
             throw $this->createNotFoundException(
                 'No user found for id '.$id_user
             );
         }
 
-        return new Response('user with id '.$product->getLogin());
+        return new Response('user with id '.$user->getUsername());
     }
 }

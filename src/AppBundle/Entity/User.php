@@ -42,10 +42,10 @@ class User implements UserInterface, \Serializable
     private $full_name;
 
     /**
-     * @ORM\Column(type="integer", name="id_access")
-     *
+     * @ORM\ManyToOne(targetEntity="Access", inversedBy="users")
+     * @ORM\JoinColumn(name="id_access", referencedColumnName="id_access")
      */
-    private $id_access;
+    private $access;
 
     public function setUsername(string $login):void
     {
@@ -67,9 +67,9 @@ class User implements UserInterface, \Serializable
         $this->full_name = $name;
     }
 
-    public function setAccess(int $access):void
+    public function setAccess(Access $access):void
     {
-        $this->id_access = $access;
+        $this->access = $access;
     }
 
     public function getUsername():string
@@ -92,19 +92,14 @@ class User implements UserInterface, \Serializable
         return $this->full_name;
     }
 
-    public function getId_user():string
+    public function getIdUser():string
     {
         return $this->id_user;
     }
 
-    public function getIdAccess():string
+    public function getRoles():array
     {
-        return $this->id_access;
-    }
-
-    public function getRoles()
-    {
-        return array('ROLE_USER');
+        return array($this->access->getAccessName());
     }
 
     public function eraseCredentials()
