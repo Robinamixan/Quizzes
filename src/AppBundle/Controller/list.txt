@@ -1,0 +1,13 @@
+/autentification
+/registration
+---------------- ROLE_GUEST
+/main
+/quizzes
+/quiz/{}
+/quiz/{}/question/{}
+/quiz/{}/results
+/users/top
+---------------- ROLE_USET
+/control/quizzes
+/control/quizzes/edit/{}
+/control/users

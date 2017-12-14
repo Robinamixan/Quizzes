@@ -4,10 +4,11 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="Users_Account", indexes={
+ * @ORM\Table(name="Accounts", indexes={
  *                                          @ORM\Index(name="User_Email_uindex", columns={"email"}),
  *                                          @ORM\Index(name="User_Login_uindex", columns={"username"})
  *                                          })
@@ -42,7 +43,7 @@ class User implements UserInterface, \Serializable
     private $full_name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Access", inversedBy="users")
+     * @ORM\ManyToOne(targetEntity="Access")
      * @ORM\JoinColumn(name="id_access", referencedColumnName="id_access")
      */
     private $access;
@@ -72,32 +73,32 @@ class User implements UserInterface, \Serializable
         $this->access = $access;
     }
 
-    public function getUsername():string
+    public function getUsername()
     {
         return $this->username;
     }
 
-    public function getPassword():string
+    public function getPassword()
     {
         return $this->password;
     }
 
-    public function getEmail():string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function getFullName():string
+    public function getFullName()
     {
         return $this->full_name;
     }
 
-    public function getIdUser():string
+    public function getIdUser()
     {
         return $this->id_user;
     }
 
-    public function getRoles():array
+    public function getRoles()
     {
         return array($this->access->getAccessName());
     }

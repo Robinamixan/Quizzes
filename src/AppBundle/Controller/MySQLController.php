@@ -11,7 +11,13 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Access;
+use AppBundle\Entity\Answer;
+use AppBundle\Entity\Condition;
+use AppBundle\Entity\Passage;
+use AppBundle\Entity\Question;
 use AppBundle\Entity\User;
+use AppBundle\Entity\Quiz;
+use AppBundle\Services\AddQuestionBD;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +46,7 @@ class MySQLController extends Controller
 
         $access = $this->getDoctrine()
             ->getRepository(Access::class)
-            ->find(2);
+            ->find('ROLE_USER');
 
         $user->setAccess($access);
 
@@ -81,5 +87,64 @@ class MySQLController extends Controller
         }
 
         return new Response('user with id '.$user->getUsername());
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @Route("/add_question_bd", name="show_db")
+     */
+    public function addQuestionAction(EntityManagerInterface $em)
+    {
+        $em = $this->getDoctrine()->getManager();
+//        $quest1 = $this->getDoctrine()
+//            ->getRepository(Question::class)
+//            ->find(1);
+//
+//        $quest2 = $this->getDoctrine()
+//            ->getRepository(Question::class)
+//            ->find(2);
+//
+//        $victor = new Quiz("Вясёлка");
+//        $victor->addQuestion($quest1);
+//        $victor->addQuestion($quest2);
+
+
+        $quiz = $this->getDoctrine()
+            ->getRepository(Quiz::class)
+            ->find(1);
+
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->find(6);
+
+        $condition = $this->getDoctrine()
+            ->getRepository(Condition::class)
+            ->find(1);
+
+        $question = $this->getDoctrine()
+            ->getRepository(Question::class)
+            ->find(1);
+
+        $answer = $this->getDoctrine()
+            ->getRepository(Answer::class)
+            ->find(1);
+
+
+        $passage = new Passage($quiz, $user, $condition);
+
+        $passage->addResult($question, $answer);
+
+        $em->persist($passage);
+
+        $em->flush();
+
+//        $add = new AddQuestionBD('Быть или не быть?');
+//        $add->addAnswer('Быть',false);
+//        $add->addAnswer('Не быть',false);
+//        $add->addAnswer('Сложна',true);
+//        $add->pushBD($em);
+//        $question = $add->getQuestion();
+        return new Response('question with id '. $passage->getIdPassage());
     }
 }

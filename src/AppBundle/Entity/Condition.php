@@ -7,34 +7,34 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="Accesses", indexes={@ORM\Index(name="Accesses_Name_uindex", columns={"Name"})})
+ * @ORM\Table(name="Conditions")
  */
-class Access
+class Condition
 {
     /**
-     * @ORM\Column(type="integer", name="id_access")
+     * @ORM\Column(type="integer", name="id_condition")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id_access;
+    private $id_condition;
 
     /**
      * @ORM\Column(type="string", length=30, name="name")
      */
-    private $access_name;
+    private $condition_name;
 
-    public function setAccessName(string $access_name)
+    public function setAccessName(string $name)
     {
-        $this->access_name = $access_name;
+        $this->condition_name = $name;
     }
 
     public function getAccessName():string
     {
-        return $this->access_name;
+        return $this->condition_name;
     }
 
     public function getIdAccess():string
     {
-        return $this->id_access;
+        return $this->id_condition;
     }
 }
