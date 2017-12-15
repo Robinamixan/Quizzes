@@ -41,27 +41,27 @@ class Answer
         $this->question = $question;
     }
 
-    public function setAnswerText(string $text):void
+    public function setAnswerText(string $text)
     {
         $this->answer_text = $text;
     }
 
-    public function setFlagRight(bool $flag):void
+    public function setFlagRight(bool $flag)
     {
         $this->flag_right = $flag;
     }
 
-    public function getAnswerText():string
+    public function getAnswerText()
     {
         return $this->answer_text;
     }
 
-    public function getFlagRight():bool
+    public function getFlagRight()
     {
         return $this->flag_right;
     }
 
-    public function getIdAnswer():string
+    public function getIdAnswer()
     {
         return $this->id_answer;
     }

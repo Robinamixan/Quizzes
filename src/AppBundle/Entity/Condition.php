@@ -28,12 +28,12 @@ class Condition
         $this->condition_name = $name;
     }
 
-    public function getAccessName():string
+    public function getAccessName()
     {
         return $this->condition_name;
     }
 
-    public function getIdAccess():string
+    public function getIdAccess()
     {
         return $this->id_condition;
     }

@@ -51,17 +51,17 @@ class Quiz
         $this->questions = new ArrayCollection();
     }
 
-    public function setName(string $name):void
+    public function setName(string $name)
     {
         $this->victorine_name = $name;
     }
 
-    public function setDateOfCreate(Date $date):void
+    public function setDateOfCreate(Date $date)
     {
         $this->date_of_create = $date;
     }
 
-    public function setFlagActive(bool $flag):void
+    public function setFlagActive(bool $flag)
     {
         $this->flag_active = $flag;
     }
@@ -86,7 +86,7 @@ class Quiz
         return $this->id_quiz;
     }
 
-    public function addQuestion(Question $question):void
+    public function addQuestion(Question $question)
     {
         $this->questions[] = $question;
     }

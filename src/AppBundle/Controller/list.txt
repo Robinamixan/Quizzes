@@ -1,4 +1,4 @@
-/autentification
+/authentication
 /registration
 ---------------- ROLE_GUEST
 /main
@@ -7,7 +7,8 @@
 /quiz/{}/question/{}
 /quiz/{}/results
 /users/top
----------------- ROLE_USET
+---------------- ROLE_USER
 /control/quizzes
 /control/quizzes/edit/{}
 /control/users
+---------------- ROLE_ADMIN

@@ -53,7 +53,7 @@ class Passage
         $this->results[] = new Result($question, $answer, $this);
     }
 
-    public function getIdPassage():string
+    public function getIdPassage()
     {
         return $this->id_passage;
     }

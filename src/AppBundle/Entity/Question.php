@@ -33,27 +33,27 @@ class Question
         $this->question_text = $text;
     }
 
-    public function setQuestionText(string $text):void
+    public function setQuestionText(string $text)
     {
         $this->question_text = $text;
     }
 
-    public function addAnswer(string $text, bool $flag):void
+    public function addAnswer(string $text, bool $flag)
     {
         $this->answers[] = new Answer($text, $flag, $this);
     }
 
-    public function getQuestionText():string
+    public function getQuestionText()
     {
         return $this->question_text;
     }
 
-    public function getAnswers():array
+    public function getAnswers()
     {
         return $this->answers;
     }
 
-    public function getIdQuestion():string
+    public function getIdQuestion()
     {
         return $this->id_quetion;
     }

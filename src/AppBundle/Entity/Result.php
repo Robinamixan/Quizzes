@@ -3,8 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints\Time;
 
 /**
  * @ORM\Entity
@@ -47,7 +45,7 @@ class Result
         $this->passage = $passage;
         $this->answer = $answer;
         $this->question = $question;
-        $this->time = new Time(12);
+        $this->time = \DateTime::createFromFormat('H:i','0:10');
     }
 
     public function getAnswer()

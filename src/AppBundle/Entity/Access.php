@@ -28,12 +28,12 @@ class Access
         $this->access_name = $access_name;
     }
 
-    public function getAccessName():string
+    public function getAccessName()
     {
         return $this->access_name;
     }
 
-    public function getIdAccess():string
+    public function getIdAccess()
     {
         return $this->id_access;
     }

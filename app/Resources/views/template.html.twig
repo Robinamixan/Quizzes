@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+
+    <title>Welcome to quizzes</title>
     {% block stylesheets %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ asset('assets/ico/favicon.ico') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 
-    <title>SOLID - Bootstrap 3 Theme</title>
+
 
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
@@ -20,17 +22,11 @@
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet">
 
-
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="{{ asset('../../assets/js/ie8-responsive-file-warning.js') }}"></script><![endif]-->
-
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <script src="{{ asset('assets/js/modernizr.js') }}"></script>
 </head>
 
 <body>
@@ -49,20 +45,46 @@
         </div>
         <div class="navbar-collapse collapse navbar-right">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">HOME</a></li>
-                <li><a href="#">ABOUT</a></li>
-                <li><a href="#">CONTACT</a></li>
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contract</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">PAGES <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">BLOG</a></li>
-                        <li><a href="#">SINGLE POST</a></li>
-                        <li><a href="#">PORTFOLIO</a></li>
-                        <li><a href="#">SINGLE PROJECT</a></li>
-                    </ul>
+
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="display: inline-block; padding: 3px 0 3px 0">
+                        <img src="{{ asset('assets/img/user.png') }}" class="img-circle" style="height: 45px; margin-right: 5px">
+
+                        {% if is_granted("ROLE_USER") %}
+                            {{ app.user.fullname }}
+
+                        <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Profile</a></li>
+                            <li><a href="#">Settings</a></li>
+                            <li><a href="#">Quizzes of User</a></li>
+                            <li><a href="#">Log out</a></li>
+                        </ul>
+
+                        {% elseif is_granted("ROLE_ADMIN") %}
+                            {{ app.user.fullname }}
+
+                            <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Profile</a></li>
+                                <li><a href="#">Admin panel</a></li>
+                                <li><a href="#">Settings</a></li>
+                                <li><a href="#">Quizzes of User</a></li>
+                                <li><a href="#">Log out</a></li>
+                            </ul>
+                        {% else %}
+                            Undefined User
+                            <b class="caret"></b></a>
+                        {% endif %}
+
                 </li>
             </ul>
+
         </div><!--/.nav-collapse -->
+
     </div>
 </div>
 
@@ -75,10 +97,6 @@
         </div><!-- /row -->
     </div> <!-- /container -->
 </div><!-- /headerwrap -->
-
-<!-- *****************************************************************************************************************
- FOOTER
- ***************************************************************************************************************** -->
 <div id="footerwrap">
     <div class="container">
         <div class="row">
@@ -112,9 +130,6 @@
     </div><! --/container -->
 </div><! --/footerwrap -->
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="{{ asset('https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/js/retina-1.1.0.js') }}"></script>
@@ -123,89 +138,5 @@
 <script src="{{ asset('assets/js/jquery.prettyPhoto.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.isotope.min.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
-
-
-<script>
-    // Portfolio
-    (function($) {
-        "use strict";
-        var $container = $('.portfolio'),
-            $items = $container.find('.portfolio-item'),
-            portfolioLayout = 'fitRows';
-
-        if( $container.hasClass('portfolio-centered') ) {
-            portfolioLayout = 'masonry';
-        }
-
-        $container.isotope({
-            filter: '*',
-            animationEngine: 'best-available',
-            layoutMode: portfolioLayout,
-            animationOptions: {
-                duration: 750,
-                easing: 'linear',
-                queue: false
-            },
-            masonry: {
-            }
-        }, refreshWaypoints());
-
-        function refreshWaypoints() {
-            setTimeout(function() {
-            }, 1000);
-        }
-
-        $('nav.portfolio-filter ul a').on('click', function() {
-            var selector = $(this).attr('data-filter');
-            $container.isotope({ filter: selector }, refreshWaypoints());
-            $('nav.portfolio-filter ul a').removeClass('active');
-            $(this).addClass('active');
-            return false;
-        });
-
-        function getColumnNumber() {
-            var winWidth = $(window).width(),
-                columnNumber = 1;
-
-            if (winWidth > 1200) {
-                columnNumber = 5;
-            } else if (winWidth > 950) {
-                columnNumber = 4;
-            } else if (winWidth > 600) {
-                columnNumber = 3;
-            } else if (winWidth > 400) {
-                columnNumber = 2;
-            } else if (winWidth > 250) {
-                columnNumber = 1;
-            }
-            return columnNumber;
-        }
-
-        function setColumns() {
-            var winWidth = $(window).width(),
-                columnNumber = getColumnNumber(),
-                itemWidth = Math.floor(winWidth / columnNumber);
-
-            $container.find('.portfolio-item').each(function() {
-                $(this).css( {
-                    width : itemWidth + 'px'
-                });
-            });
-        }
-
-        function setPortfolio() {
-            setColumns();
-            $container.isotope('reLayout');
-        }
-
-        $container.imagesLoaded(function () {
-            setPortfolio();
-        });
-
-        $(window).on('resize', function () {
-            setPortfolio();
-        });
-    })(jQuery);
-</script>
 </body>
 </html>
