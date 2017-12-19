@@ -3,26 +3,37 @@
 
 {% extends 'template.html.twig' %}
 
+{% block title %}
+    Authentication
+{% endblock title %}
+
 {% block body %}
 
 {% if error %}
     <div style="color: red">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
-<form action="{{ path('login') }}" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="_username" value="{{ last_username }}" /><br>
+    <div class="col-md-4"></div>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="_password" />
+    <div class="col-md-4">
+        <section class="login-form">
+            <form method="post" action="{{ path('login') }}" role="login">
 
-    {#
-        If you want to control the URL the user
-        is redirected to on success (more details below)
-        <input type="hidden" name="_target_path" value="/account" />
-    #}
+                <input type="text" id="username" name="_username" class="form-control input-lg" value="{{ last_username }}" placeholder="Login" required/>
 
-    <button type="submit">login</button>
-</form>
+                <input type="password" id="password" name="_password" class="form-control input-lg" placeholder="Password" required/>
+                <div class="pwstrength_viewport_progress"></div>
+
+
+                <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                <div>
+                    <a href="{{ path('registration') }}">Create account</a> or <a href="#">reset password</a>
+                </div>
+
+            </form>
+        </section>
+    </div>
+
+    <div class="col-md-4"></div>
 
 {% endblock body %}

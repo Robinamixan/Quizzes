@@ -5,10 +5,9 @@
 
 {% block body %}
 
-    {{ username }} <br>
-    {{ password }} <br>
-    {{ email }} <br>
-    {{ fullname }} <br>
-    {{ role }} <br>
+    {{ app.user.username }} <br>
+    {{ app.user.email }} <br>
+    {{ app.user.fullname }} <br>
+    {{ app.user.Roles[0] }} <br>
 
 {% endblock body %}

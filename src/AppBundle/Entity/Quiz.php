@@ -66,7 +66,7 @@ class Quiz
         $this->flag_active = $flag;
     }
 
-    public function getNAme()
+    public function getName()
     {
         return $this->name;
     }

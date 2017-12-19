@@ -7,7 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Welcome to quizzes</title>
+    <title>{% block title %}{% endblock %}</title>
+
     {% block stylesheets %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ asset('assets/ico/favicon.ico') }}">
@@ -30,8 +31,6 @@
 </head>
 
 <body>
-
-<!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -45,58 +44,24 @@
         </div>
         <div class="navbar-collapse collapse navbar-right">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contract</a></li>
-                <li class="dropdown">
-
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="display: inline-block; padding: 3px 0 3px 0">
-                        <img src="{{ asset('assets/img/user.png') }}" class="img-circle" style="height: 45px; margin-right: 5px">
-
-                        {% if is_granted("ROLE_USER") %}
-                            {{ app.user.fullname }}
-
-                        <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Settings</a></li>
-                            <li><a href="#">Quizzes of User</a></li>
-                            <li><a href="#">Log out</a></li>
-                        </ul>
-
-                        {% elseif is_granted("ROLE_ADMIN") %}
-                            {{ app.user.fullname }}
-
-                            <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Profile</a></li>
-                                <li><a href="#">Admin panel</a></li>
-                                <li><a href="#">Settings</a></li>
-                                <li><a href="#">Quizzes of User</a></li>
-                                <li><a href="#">Log out</a></li>
-                            </ul>
-                        {% else %}
-                            Undefined User
-                            <b class="caret"></b></a>
-                        {% endif %}
-
-                </li>
+                {% if is_granted("ROLE_USER") %}
+                    {% include 'including/users_panel_list.html.twig' with {'role' : 'user'} %}
+                {% elseif is_granted("ROLE_ADMIN") %}
+                    {% include 'including/users_panel_list.html.twig' with {'role' : 'admin'} %}
+                {% else %}
+                    <li><a href="/login">Log in</a></li>
+                    <li><a href="/registration">Create account</a></li>
+                {% endif %}
             </ul>
-
-        </div><!--/.nav-collapse -->
-
+        </div>
     </div>
 </div>
 
 <div id="headerwrap">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                {% block body %}{% endblock %}
-            </div>
-        </div><!-- /row -->
-    </div> <!-- /container -->
-</div><!-- /headerwrap -->
+        {% block body %}{% endblock %}
+    </div>
+</div>
 <div id="footerwrap">
     <div class="container">
         <div class="row">

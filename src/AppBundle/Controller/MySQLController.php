@@ -8,8 +8,6 @@
 
 namespace AppBundle\Controller;
 
-
-
 use AppBundle\Entity\Access;
 use AppBundle\Entity\Answer;
 use AppBundle\Entity\Condition;
@@ -17,7 +15,6 @@ use AppBundle\Entity\Passage;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Quiz;
-use AppBundle\Services\AddQuestionBD;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;

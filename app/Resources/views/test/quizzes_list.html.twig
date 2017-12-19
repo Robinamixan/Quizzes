@@ -3,14 +3,11 @@
 
 {% extends 'template.html.twig' %}
 
-{% block title %}
-    Registration
-{% endblock title %}
-
 {% block body %}
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+{% for quiz in quizzes_list %}
+    <b>{{ quiz.name }}</b> <br>
+
+{% endfor %}
 
 {% endblock body %}
