@@ -17,6 +17,8 @@ class QuizzesListController extends Controller
     {
         $size_of_list = 10;
 
+        $array_of_quizzes=[];
+
         $quizzes = $this->getDoctrine()
             ->getRepository(Quiz::class)
             ->findAll();
@@ -25,7 +27,8 @@ class QuizzesListController extends Controller
 
         return $this->render('test/quizzes_list.html.twig', array(
             'quizzes_list'      => $array_of_quizzes[$page-1],
-            'page'              => $page
+            'page'              => $page,
+            'max_page'          => count($array_of_quizzes)
         ));
     }
 }

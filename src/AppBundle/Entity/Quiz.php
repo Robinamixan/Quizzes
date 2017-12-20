@@ -25,6 +25,11 @@ class Quiz
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=800, name="description", nullable=true)
+     */
+    private $description;
+
+    /**
      * @ORM\Column(type="date", name="data_of_create")
      */
     private $date_of_create;
@@ -53,7 +58,12 @@ class Quiz
 
     public function setName(string $name)
     {
-        $this->victorine_name = $name;
+        $this->name = $name;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
     }
 
     public function setDateOfCreate(Date $date)
@@ -69,6 +79,11 @@ class Quiz
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     public function getDateOfCreate()

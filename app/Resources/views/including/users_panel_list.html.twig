@@ -1,3 +1,5 @@
+
+<li><a href="{{ path('quizzes_list') }}">Quizzes</a></li>
 <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="display: inline-block; padding: 3px 0 3px 0">
         <img src="{{ asset('assets/img/user.png') }}" class="img-circle" style="height: 45px; margin-right: 5px">
@@ -10,6 +12,6 @@
         {%  endif %}
         <li><a href="#">Settings</a></li>
         <li><a href="#">Quizzes of User</a></li>
-        <li><a href="#">Log out</a></li>
+        <li><a href="{{ path('logout') }}">Log out</a></li>
     </ul>
 </li>

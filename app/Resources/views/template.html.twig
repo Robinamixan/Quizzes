@@ -49,8 +49,8 @@
                 {% elseif is_granted("ROLE_ADMIN") %}
                     {% include 'including/users_panel_list.html.twig' with {'role' : 'admin'} %}
                 {% else %}
-                    <li><a href="/login">Log in</a></li>
-                    <li><a href="/registration">Create account</a></li>
+                    <li><a href="{{ path('login') }}">Log in</a></li>
+                    <li><a href="{{ path('registration') }}">Create account</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -82,12 +82,10 @@
                 </p>
             </div>
             <div class="col-lg-4">
-                <h4>Our Bunker</h4>
+                <h4>Our contacts</h4>
                 <div class="hline-w"></div>
                 <p>
-                    Some Ave, 987,<br/>
-                    23890, New York,<br/>
-                    United States.<br/>
+                    robinamixan@mail.ru<br/>
                 </p>
             </div>
 
@@ -103,5 +101,7 @@
 <script src="{{ asset('assets/js/jquery.prettyPhoto.js') }}"></script>
 <script src="{{ asset('assets/js/jquery.isotope.min.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
 </body>
 </html>

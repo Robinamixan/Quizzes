@@ -3,11 +3,44 @@
 
 {% extends 'template.html.twig' %}
 
+{% block title %}
+    Quizzes
+{% endblock title %}
+
+{% if page <= 1 %}
+    {% set previous_page = 1 %}
+{% else %}
+    {% set previous_page = page - 1 %}
+{% endif %}
+
+{% if page >= max_page%}
+    {% set next_page = page %}
+{% else %}
+    {% set next_page = page +1 %}
+{% endif %}
+
 {% block body %}
 
-{% for quiz in quizzes_list %}
-    <b>{{ quiz.name }}</b> <br>
 
-{% endfor %}
+
+    <div id="quizzes_list" style="background-color: white">
+
+        {% for quiz in quizzes_list %}
+
+            <a >
+                <div class="ctitle">{{ quiz.name }}</div>
+                <div class="" style="color: #000000;">{{ quiz.description }}</div>
+            </a>
+
+        {% endfor %}
+    </div>
+    <a href="{{ path('quizzes_list', {'page': previous_page})  }}">previous page</a>
+
+    <a href="{{ path('quizzes_list', {'page': next_page})  }}">next page</a>
 
 {% endblock body %}
+
+{% block javascripts %}
+
+
+{% endblock javascripts %}
