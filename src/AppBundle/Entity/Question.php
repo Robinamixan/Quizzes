@@ -28,9 +28,9 @@ class Question
      */
     private $answers;
 
-    public function __construct(string $text)
+    public function __construct()
     {
-        $this->question_text = $text;
+
     }
 
     public function setQuestionText(string $text)

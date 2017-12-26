@@ -21,8 +21,6 @@
 
 {% block body %}
 
-
-
     <div id="quizzes_list" style="background-color: white">
 
         {% for quiz in quizzes_list %}
@@ -34,9 +32,10 @@
 
         {% endfor %}
     </div>
-    <a href="{{ path('quizzes_list', {'page': previous_page})  }}">previous page</a>
 
-    <a href="{{ path('quizzes_list', {'page': next_page})  }}">next page</a>
+    <a class="btn btn-default" href="{{ path('quizzes_list', {'page': previous_page})  }}">previous page</a>
+
+    <a class="btn btn-default" href="{{ path('quizzes_list', {'page': next_page})  }}">next page</a>
 
 {% endblock body %}
 

@@ -48,10 +48,8 @@ class Quiz
      */
     private $questions;
 
-    public function __construct(string $name)
+    public function __construct()
     {
-        $this->name = $name;
-        $this->flag_active = true;
         $this->date_of_create = new \DateTime('now');
         $this->questions = new ArrayCollection();
     }
@@ -96,6 +94,11 @@ class Quiz
         return $this->flag_active;
     }
 
+    public function getQuestions()
+    {
+        return $this->questions;
+    }
+
     public function getIdQuiz()
     {
         return $this->id_quiz;
@@ -104,5 +107,10 @@ class Quiz
     public function addQuestion(Question $question)
     {
         $this->questions[] = $question;
+    }
+
+    public function removeQuestion(Question $question)
+    {
+        $this->questions->removeElement($question);
     }
 }
