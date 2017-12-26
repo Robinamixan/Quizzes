@@ -8,7 +8,6 @@ use AppBundle\Form\RegistrationForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends Controller
@@ -18,7 +17,7 @@ class RegistrationController extends Controller
      *
      * @Route("/registration", name="registration")
      */
-    public function registrationAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function registrationAction(Request $request)
     {
         $user = new User();
 
@@ -26,9 +25,25 @@ class RegistrationController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        return $this->render('security/registration.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
 
-            $em = $this->getDoctrine()->getManager();
+    /**
+     * @param Request $req
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     *
+     * @Route("/create", name="create")
+     */
+    public function createAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $em   = $this->getDoctrine()->getManager();
+        $form = $this->createForm(RegistrationForm::class, new User());
+
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
 
@@ -37,19 +52,20 @@ class RegistrationController extends Controller
 
             $access = $this->getDoctrine()
                 ->getRepository(Access::class)
-                ->findOneByAccessName('ROLE_USER');
+                ->findOneByName('ROLE_USER');
 
             $user->setAccess($access);
 
             $em->persist($user);
-
             $em->flush();
+
+            $url = $this->generateUrl('login');
+            return $this->redirect($url);
         }
+
 
         return $this->render('security/registration.html.twig', array(
             'form' => $form->createView()
         ));
     }
-
-
 }

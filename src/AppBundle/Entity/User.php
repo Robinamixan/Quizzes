@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                                          @ORM\Index(name="User_Email_uindex", columns={"email"}),
  *                                          @ORM\Index(name="User_Login_uindex", columns={"username"})
  *                                          })
+ * @UniqueEntity(fields="email", message="This email already taken")
+ * @UniqueEntity(fields="username", message="This username already taken")
  */
 class User implements UserInterface, \Serializable
 {
@@ -23,17 +26,20 @@ class User implements UserInterface, \Serializable
     private $id_user;
 
     /**
-     * @ORM\Column(type="string", length=30, name="username")
+     * @ORM\Column(type="string", length=30, name="username", unique=true)
+     * @Assert\NotBlank()
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=100, name="password")
+     * @Assert\NotBlank()
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=40, name="email")
+     * @ORM\Column(type="string", length=40, name="email", unique=true)
+     * @Assert\NotBlank()
      */
     private $email;
 
@@ -100,7 +106,7 @@ class User implements UserInterface, \Serializable
 
     public function getRoles()
     {
-        return array($this->access->getAccessName());
+        return array($this->access->getName());
     }
 
     public function eraseCredentials()

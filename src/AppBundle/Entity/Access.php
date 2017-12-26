@@ -21,16 +21,16 @@ class Access
     /**
      * @ORM\Column(type="string", length=30, name="name")
      */
-    private $access_name;
+    private $name;
 
     public function setAccessName(string $access_name)
     {
-        $this->access_name = $access_name;
+        $this->name = $access_name;
     }
 
-    public function getAccessName()
+    public function getName()
     {
-        return $this->access_name;
+        return $this->name;
     }
 
     public function getIdAccess()
