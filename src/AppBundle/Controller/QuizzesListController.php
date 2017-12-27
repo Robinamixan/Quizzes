@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Quiz;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,24 +10,34 @@ use Symfony\Component\HttpFoundation\Response;
 class QuizzesListController extends Controller
 {
     /**
-     * @Route("/quizzes/{page}", name="quizzes_list", requirements={"page"="\d+"})
+     * @Route("/quizzes", name="quizzes_list")
      */
-    public function quizzesListAction(Request $request, int $page = 1)
+    public function quizzesListAction(Request $request)
     {
-        $size_of_list = 10;
+        $em = $this->getDoctrine()->getManager(); // ...or getEntityManager() prior to Symfony 2.1
+        $connection = $em->getConnection();
+        $sql_query = 'SELECT q.*, z1.users_amount
+                      FROM Quizzes q LEFT JOIN
+                        (SELECT pas.id_quiz AS id_quiz, count(id_user) AS users_amount
+                        FROM Passages pas
+                        GROUP BY pas.id_quiz) z1
+                      ON z1.id_quiz = q.id_quiz';
+        $statement = $connection->prepare($sql_query);
+        $statement->execute();
+        $results = $statement->fetchAll();
 
-        $array_of_quizzes=[];
 
-        $quizzes = $this->getDoctrine()
-            ->getRepository(Quiz::class)
-            ->findAll();
 
-        $array_of_quizzes = array_chunk($quizzes, $size_of_list);
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $results, /* query NOT result */
+            $request->query->getInt('page', 1),
+            5/*limit per page*/
+        );
 
         return $this->render('test/quizzes_list.html.twig', array(
-            'quizzes_list'      => $array_of_quizzes[$page-1],
-            'page'              => $page,
-            'max_page'          => count($array_of_quizzes)
+            'pagination'        => $pagination,
         ));
     }
 }
+

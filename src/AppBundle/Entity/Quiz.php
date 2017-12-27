@@ -30,7 +30,7 @@ class Quiz
     private $description;
 
     /**
-     * @ORM\Column(type="date", name="data_of_create")
+     * @ORM\Column(type="date", name="date_of_create")
      */
     private $date_of_create;
 

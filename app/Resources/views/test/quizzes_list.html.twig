@@ -1,41 +1,77 @@
-{# templates/security/login.html.twig #}
-{# ... you will probably extend your base template, like base.html.twig #}
-
 {% extends 'template.html.twig' %}
 
-{% block title %}
-    Quizzes
+{% block title %}passengersszes
 {% endblock title %}
-
-{% if page <= 1 %}
-    {% set previous_page = 1 %}
-{% else %}
-    {% set previous_page = page - 1 %}
-{% endif %}
-
-{% if page >= max_page%}
-    {% set next_page = page %}
-{% else %}
-    {% set next_page = page +1 %}
-{% endif %}
 
 {% block body %}
 
-    <div id="quizzes_list" style="background-color: white">
+    {# total items count #}
 
-        {% for quiz in quizzes_list %}
 
-            <a >
-                <div class="ctitle">{{ quiz.name }}</div>
-                <div class="" style="color: #000000;">{{ quiz.description }}</div>
-            </a>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="border: #0000F0 solid 2px">
+                <div class="count">
+                    <h3 style="color: black;">All quizzes - {{ pagination.getTotalItemCount }}</h3>
+                </div>
+                <div id="postlist">
+                    {% for quiz in pagination %}
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <div class="text-center">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <h3 class="pull-left" style="color: black; font-family: 'Raleway', sans-serif;">{{ quiz.name }}</h3>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h4 class="pull-right">
+                                                <small>{{ quiz.date_of_create | date('Y-m-d') }}</small>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        {% endfor %}
+                            <div class="panel-body">
+
+                                <div style="width: 100%">
+                                    {{ quiz.description }}
+                                </div>
+                                <div>
+                                   Users passed -
+                                    {% if quiz.users_amount == null %}
+                                        0
+                                    {% else %}
+                                        {{ quiz.users_amount }}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="panel-footer" style="height: 50px; padding-top: 6px">
+
+                                {% if quiz.flag_active %}
+                                    <p class="pull-left" style="background-color: green; padding: 5px; margin-top: 0; color: white;"> Active </p>
+                                {% else %}
+                                    <p class="pull-left" style="background-color: red; padding: 5px; margin-top: 0; color: white;"> Unactive </p>
+                                {% endif %}
+                                <button class="btn btn-default pull-right">Start</button>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
     </div>
 
-    <a class="btn btn-default" href="{{ path('quizzes_list', {'page': previous_page})  }}">previous page</a>
 
-    <a class="btn btn-default" href="{{ path('quizzes_list', {'page': next_page})  }}">next page</a>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 
 {% endblock body %}
 
@@ -43,3 +79,4 @@
 
 
 {% endblock javascripts %}
+
