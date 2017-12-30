@@ -49,10 +49,21 @@ class User implements UserInterface, \Serializable
     private $full_name;
 
     /**
+     * @ORM\Column(type="string", length=300, name="token")
+     */
+    private $token;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Access")
      * @ORM\JoinColumn(name="id_access", referencedColumnName="id_access")
      */
     private $access;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="UserCondition")
+     * @ORM\JoinColumn(name="id_condition", referencedColumnName="id_condition")
+     */
+    private $condition;
 
     public function setUsername(string $login)
     {
@@ -74,9 +85,19 @@ class User implements UserInterface, \Serializable
         $this->full_name = $name;
     }
 
+    public function setToken(string $token)
+    {
+        $this->token = $token;
+    }
+
     public function setAccess(Access $access)
     {
         $this->access = $access;
+    }
+
+    public function setCondition(UserCondition $condition)
+    {
+        $this->condition = $condition;
     }
 
     public function getUsername()
@@ -99,6 +120,11 @@ class User implements UserInterface, \Serializable
         return $this->full_name;
     }
 
+    public function getToken()
+    {
+        return $this->token;
+    }
+
     public function getIdUser()
     {
         return $this->id_user;
@@ -107,6 +133,11 @@ class User implements UserInterface, \Serializable
     public function getRoles()
     {
         return array($this->access->getName());
+    }
+
+    public function getCondition()
+    {
+        return array($this->condition->getName());
     }
 
     public function eraseCredentials()

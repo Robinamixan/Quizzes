@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
@@ -34,13 +33,6 @@ class Answer
      */
     private $question;
 
-    public function __construct(string $text, bool $flag, Question $question)
-    {
-        $this->answer_text = $text;
-        $this->flag_right = $flag;
-        $this->question = $question;
-    }
-
     public function setAnswerText(string $text)
     {
         $this->answer_text = $text;
@@ -49,6 +41,11 @@ class Answer
     public function setFlagRight(bool $flag)
     {
         $this->flag_right = $flag;
+    }
+
+    public function setQuestion(Question $question)
+    {
+        $this->question = $question;
     }
 
     public function getAnswerText()

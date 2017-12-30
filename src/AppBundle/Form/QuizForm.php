@@ -9,7 +9,6 @@
 namespace AppBundle\Form;
 
 
-use AppBundle\Entity\Question;
 use AppBundle\Entity\Quiz;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -33,11 +32,15 @@ class QuizForm extends AbstractType
             ))
 
             ->add('questions', CollectionType::class, array(
+                'label' => false,
                 'entry_type' => QuestionForm::class,
-                'entry_options' => array('label' => false),
+                'entry_options' => array('label' => false,
+                    'attr' => array('class' => 'quiz_form_questions_box')),
                 'allow_add' => true,
                 'by_reference' => false,
                 'allow_delete' => true,
+
+
             ))
 
             ->add('save', SubmitType::class, array('label' => 'Create new Quiz'))

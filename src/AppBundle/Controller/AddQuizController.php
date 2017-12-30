@@ -8,7 +8,6 @@ use AppBundle\Form\QuizForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class AddQuizController extends Controller
 {
@@ -17,6 +16,10 @@ class AddQuizController extends Controller
      */
     public function profileAction(Request $request)
     {
+        $questions = $this->getDoctrine()
+            ->getRepository(Question::class)
+            ->findAll();
+
         $em = $this->getDoctrine()->getManager();
         $quiz = new Quiz();
 
@@ -36,7 +39,8 @@ class AddQuizController extends Controller
         }
 
         return $this->render('admin_lists/admin_add_quiz.html.twig', array(
-            'form' => $form->createView()
+            'form'          => $form->createView(),
+            'questions'     => $questions,
         ));
     }
 }

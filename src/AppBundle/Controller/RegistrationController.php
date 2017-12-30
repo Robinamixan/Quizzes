@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Access;
 use AppBundle\Entity\User;
 use AppBundle\Form\RegistrationForm;
+use Proxies\__CG__\AppBundle\Entity\UserCondition;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,16 +37,17 @@ class RegistrationController extends Controller
      *
      * @Route("/create", name="create")
      */
-    public function createAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function createAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, \Swift_Mailer $mailer)
     {
         $em   = $this->getDoctrine()->getManager();
         $form = $this->createForm(RegistrationForm::class, new User());
-
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
+            $token = md5($user->getEmail().time());
+            $user->setToken($token);
 
             $password = $passwordEncoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
@@ -54,10 +56,32 @@ class RegistrationController extends Controller
                 ->getRepository(Access::class)
                 ->findOneByName('ROLE_USER');
 
+            $condition = $this->getDoctrine()
+                ->getRepository(UserCondition::class)
+                ->findOneByName('Not confirmed');
+
             $user->setAccess($access);
+            $user->setCondition($condition);
 
             $em->persist($user);
             $em->flush();
+
+            $url_confirm = $this->generateUrl('registration_confirm');
+            $message = (new \Swift_Message('Registration Confirmation'))
+                ->setFrom('send@example.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'emails/confirm_registration.html.twig',
+                        array(
+                            'token' => $token,
+                            'url_confirm' => $url_confirm,
+                        )
+                    ),
+                    'text/html'
+                )
+            ;
+            $mailer->send($message);
 
             $url = $this->generateUrl('login');
             return $this->redirect($url);
@@ -67,5 +91,31 @@ class RegistrationController extends Controller
         return $this->render('security/registration.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @Route("/registration_confirm", name="registration_confirm")
+     */
+    public function registrationConfirmAction(Request $request)
+    {
+        $em   = $this->getDoctrine()->getManager();
+        $token = $request->query->get('token');
+        $user = new User();
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findOneByToken($token);
+
+        if ($user) {
+            $condition = $this->getDoctrine()
+                ->getRepository(UserCondition::class)
+                ->findOneByName('Active');
+            $user->setCondition($condition);
+            $em->persist($user);
+            $em->flush();
+        }
+
+        return $this->render('security/registration_confirmed.html.twig', array());
     }
 }

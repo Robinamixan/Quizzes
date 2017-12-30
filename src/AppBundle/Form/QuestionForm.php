@@ -11,6 +11,8 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\Question;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,7 +22,24 @@ class QuestionForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('question_text', TextType::class, array('label' => 'Text question'))
+            ->add('question_text', TextType::class, array(
+                'label' => false,
+                'attr' => array(
+                    'class'         => 'form-control quiz_form_questions',
+                    'placeholder'   => 'Question text',
+                )
+            ))
+            ->add('answers', CollectionType::class, array(
+                'label' => false,
+                'mapped' => false,
+                'entry_type' => AnswerForm::class,
+                'entry_options' => array('label' => false,
+                    'attr' => array('class' => 'quiz_form_questions_box')),
+                'allow_add' => true,
+                'by_reference' => false,
+                'allow_delete' => true,
+            ))
+            ->add('save', SubmitType::class, array('label' => 'Create new Quiz'))
         ;
     }
 

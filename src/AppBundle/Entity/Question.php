@@ -2,8 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
@@ -30,7 +30,7 @@ class Question
 
     public function __construct()
     {
-
+        $this->answers = new ArrayCollection();
     }
 
     public function setQuestionText(string $text)
@@ -38,9 +38,15 @@ class Question
         $this->question_text = $text;
     }
 
-    public function addAnswer(string $text, bool $flag)
+    public function addAnswer()
     {
-        $this->answers[] = new Answer($text, $flag, $this);
+        $text = "sdsdsd";
+        $flag = true;
+        $answer = new Answer();
+        $answer->setAnswerText($text);
+        $answer->setFlagRight($flag);
+        $answer->setQuestion($this);
+        $this->answers[] = $answer;
     }
 
     public function getQuestionText()

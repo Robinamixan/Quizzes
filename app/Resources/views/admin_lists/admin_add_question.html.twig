@@ -4,58 +4,42 @@
 {% extends 'template.html.twig' %}
 
 {% block title %}
-    Add new quiz
+    Add new question
 {% endblock title %}
 
 {% block body %}
-
-    {{ form_start(form) }}
-
 
     <div class="col-md-4">
 
         <section class="registe-form">
 
 
+            {{ form_start(form) }}
+            {{ form_row(form.question_text) }}
+            <h3>Answers</h3>
+            <ul class="answers nav" data-prototype="{{ form_widget(form.answers.vars.prototype)|e('html_attr') }}">
+                 {#iterate over each existing tag and render its only field: name#}
+                {% for answer in form.answers %}
+                    <li class="answer">
+                        {{ form_row(answer.answer_text) }}
+                    </li>
+                {% endfor %}
+            </ul>
 
-            {{ form_row(form.name) }}
-
-            <h3>Questions</h3>
-
-
-
+            {{ form_end(form) }}
 
         </section>
 
     </div>
 
     <div class="col-md-4">
-
-        <ul class="questions nav" data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}">
-            {# iterate over each existing tag and render its only field: name #}
-            {% for question in form.questions %}
-                <li class="question">
-                    {{ form_row(question.question_text) }}
-                </li>
-            {% endfor %}
-        </ul>
-
     </div>
 
     <div class="col-md-4">
 
-        <section>
-
-            {% for question in questions %}
-                <b style="color: red;">{{ question.questiontext }}</b>
-                <button class="btn btn-primary btn-block" style="display: inline-block; width: 70px;">Add</button>
-                <br>
-            {% endfor %}
-        </section>
-
     </div>
 
-    {{ form_end(form) }}
+
 
 {% endblock body %}
 
@@ -64,13 +48,13 @@
 
         var $collectionHolder;
 
-        var $addTagLink = $('<a href="#" class="add_tag_link">Add a question</a>');
+        var $addTagLink = $('<a href="#" class="add_tag_link">Add an answer</a>');
         var $newLinkLi = $('<li></li>').append($addTagLink);
 
         jQuery(document).ready(function() {
-            $collectionHolder = $('ul.questions');
+            $collectionHolder = $('ul.answers');
             $collectionHolder.append($newLinkLi);
-            $collectionHolder.find('li.question').each(function() {
+            $collectionHolder.find('li.answer').each(function() {
                 addTagFormDeleteLink($(this));
             });
 
@@ -98,8 +82,6 @@
             $tagFormLi.append($removeFormA);
             $removeFormA.on('click', function(e) {
                 e.preventDefault();
-
-                // remove the li for the tag form
                 $tagFormLi.remove();
             });
         }

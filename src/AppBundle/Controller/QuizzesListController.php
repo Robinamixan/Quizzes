@@ -5,7 +5,6 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class QuizzesListController extends Controller
 {
@@ -20,6 +19,7 @@ class QuizzesListController extends Controller
                       FROM Quizzes q LEFT JOIN
                         (SELECT pas.id_quiz AS id_quiz, count(id_user) AS users_amount
                         FROM Passages pas
+                        WHERE pas.id_condition = 3
                         GROUP BY pas.id_quiz) z1
                       ON z1.id_quiz = q.id_quiz';
         $statement = $connection->prepare($sql_query);
