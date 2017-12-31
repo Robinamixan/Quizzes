@@ -145,5 +145,6 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="select2" level="application" />
   </component>
 </module>

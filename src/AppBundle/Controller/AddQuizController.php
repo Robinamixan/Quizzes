@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\Quiz;
 use AppBundle\Form\QuizForm;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,18 +30,32 @@ class AddQuizController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-
             foreach ($quiz->getQuestions() as $question) {
-                $em->persist($question);
+                $true_question = $this->getDoctrine()
+                    ->getRepository(Question::class)
+                    ->find($question->getIdQuestion());
+
+                $quiz->removeQuestion($question);
+                $quiz->addQuestion($true_question);
+                //$em->persist($question);
             }
 
             $em->persist($quiz);
             $em->flush();
         }
+        //var_dump($quiz->getQuestions());die();
+        $array = [];
+        for($i = 0; $i< sizeof($questions); $i++) {
+            $array [$i] = [];
+            $array [$i]['id'] = $questions[$i]->getIdQuestion();
+            $array [$i]['text'] = $questions[$i]->getQuestionText();
+        }
+        $json = json_encode($array, JSON_UNESCAPED_UNICODE);
 
-        return $this->render('admin_lists/admin_add_quiz.html.twig', array(
-            'form'          => $form->createView(),
-            'questions'     => $questions,
+        return $this->render('admin_control/admin_add_quiz.html.twig', array(
+            'form'                  => $form->createView(),
+            'questions'             => $questions,
+            'json_questions'        => $json,
         ));
     }
 }

@@ -2,6 +2,7 @@
 {# ... you will probably extend your base template, like base.html.twig #}
 
 {% extends 'template.html.twig' %}
+{% form_theme form _self %}
 
 {% block title %}
     Add new question
@@ -10,48 +11,43 @@
 {% block body %}
 
     <div class="col-md-4">
+    </div>
 
-        <section class="registe-form">
-
-
+    <div class="col-md-4">
+        <section class="add_question_form">
             {{ form_start(form) }}
             {{ form_row(form.question_text) }}
             <h3>Answers</h3>
-            <ul class="answers nav" data-prototype="{{ form_widget(form.answers.vars.prototype)|e('html_attr') }}">
-                 {#iterate over each existing tag and render its only field: name#}
+            <ul class="answers list-unstyled" data-prototype="{{ form_widget(form.answers.vars.prototype)|e('html_attr') }}">
                 {% for answer in form.answers %}
                     <li class="answer">
+                        {{ form_row(answer.flag_right) }}
                         {{ form_row(answer.answer_text) }}
                     </li>
                 {% endfor %}
             </ul>
-
             {{ form_end(form) }}
-
         </section>
-
     </div>
-
     <div class="col-md-4">
     </div>
-
-    <div class="col-md-4">
-
-    </div>
-
-
-
 {% endblock body %}
+
+{% block form_row %}
+    {{ form_label(form) }}
+    {{ form_errors(form) }}
+    {{ form_widget(form) }}
+{% endblock form_row %}
 
 {% block javascripts %}
     <script>
-
         var $collectionHolder;
 
         var $addTagLink = $('<a href="#" class="add_tag_link">Add an answer</a>');
         var $newLinkLi = $('<li></li>').append($addTagLink);
 
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function()
+        {
             $collectionHolder = $('ul.answers');
             $collectionHolder.append($newLinkLi);
             $collectionHolder.find('li.answer').each(function() {
@@ -64,42 +60,58 @@
                 e.preventDefault();
                 addTagForm($collectionHolder, $newLinkLi);
             });
+
+            checkbox = $('.question_form_flag_right');
+            $collectionHolder.on("click", checkbox, function (e) {
+                check = e.target;
+                if(check.checked){
+                    $('.question_form_flag_right').prop('checked', false);
+                    check.checked = true;
+                }
+            });
         });
 
-        function addTagForm($collectionHolder, $newLinkLi) {
+        function addTagForm($collectionHolder, $newLinkLi)
+        {
             var prototype = $collectionHolder.data('prototype');
             var index = $collectionHolder.data('index');
             var newForm = prototype;
+
             newForm = newForm.replace(/__name__/g, index);
             $collectionHolder.data('index', index + 1);
-            var $newFormLi = $('<li></li>').append(newForm);
+            var $newFormLi = $('<li class="answer"></li>').append(newForm);
             $newLinkLi.before($newFormLi);
             addTagFormDeleteLink($newFormLi);
         }
 
-        function addTagFormDeleteLink($tagFormLi) {
-            var $removeFormA = $('<a href="#" style="display: inline-block">delete this question</a>');
+        function addTagFormDeleteLink($tagFormLi)
+        {
+            var $removeFormA = $('<a href="#" style="display: inline-block">Del</a>');
             $tagFormLi.append($removeFormA);
             $removeFormA.on('click', function(e) {
                 e.preventDefault();
                 $tagFormLi.remove();
             });
         }
-
     </script>
-
-
-
 {% endblock javascripts %}
 
 {% block stylesheets %}
-
     <style>
-        .quiz_form_questions{
+        li.answer{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .question_form_answers{
             display: inline-block;
         }
-        .quiz_form_questions_box{
-            display: inline-block;
+
+        .question_form_answers_box{
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 {% endblock  stylesheets%}

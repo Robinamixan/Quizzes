@@ -23,7 +23,7 @@ class Answer
     private $answer_text;
 
     /**
-     * @ORM\Column(type="boolean", name="flag_right")
+     * @ORM\Column(type="boolean", name="flag_right", nullable=true)
      */
     private $flag_right;
 
@@ -32,6 +32,11 @@ class Answer
      * @ORM\JoinColumn(name="id_question", referencedColumnName="id_question")
      */
     private $question;
+
+    public function __construct()
+    {
+        $this->flag_right = false;
+    }
 
     public function setAnswerText(string $text)
     {
@@ -61,5 +66,10 @@ class Answer
     public function getIdAnswer()
     {
         return $this->id_answer;
+    }
+
+    public function __toString()
+    {
+        return $this->answer_text;
     }
 }

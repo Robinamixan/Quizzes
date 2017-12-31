@@ -12,7 +12,7 @@
     <ul class="dropdown-menu">
         <li><a href="{{ path('profile') }}">Profile</a></li>
         {% if role == 'admin' %}
-            <li><a href="#">Admin panel</a></li>
+            <li><a href="{{ path('admin_control') }}">Admin panel</a></li>
         {%  endif %}
         <li><a href="#">Settings</a></li>
         <li><a href="#">Quizzes of User</a></li>

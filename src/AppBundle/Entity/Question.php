@@ -26,7 +26,7 @@ class Question
     /**
      * @ORM\OneToMany(targetEntity="Answer", mappedBy="question", cascade={"ALL"}, indexBy="id_answer")
      */
-    private $answers;
+    public $answers;
 
     public function __construct()
     {
@@ -36,6 +36,11 @@ class Question
     public function setQuestionText(string $text)
     {
         $this->question_text = $text;
+    }
+
+    public function setIdQuestion(int $number)
+    {
+        $this->id_quetion = $number;
     }
 
     public function addAnswer()

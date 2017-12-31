@@ -9,63 +9,51 @@
 
 {% block body %}
 
-    {{ form_start(form) }}
 
 
     <div class="col-md-4">
-
+        {{ form_start(form) }}
+        <h3>Parameters of Quiz</h3>
         <section class="registe-form">
 
-
-
             {{ form_row(form.name) }}
-
-            <h3>Questions</h3>
-
-
-
+            <br>
+            {{ form_row(form.description) }}
+            {{ form_row(form.flag_active) }}
+            {{ form_row(form.save) }}
 
         </section>
-
     </div>
 
     <div class="col-md-4">
+        <h3>Questions</h3>
+        <select class="js-example-basic-single" style="width: 250px">
+            <option></option>
+        </select>
 
         <ul class="questions nav" data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}">
-            {# iterate over each existing tag and render its only field: name #}
             {% for question in form.questions %}
                 <li class="question">
                     {{ form_row(question.question_text) }}
                 </li>
             {% endfor %}
         </ul>
-
+        {{ form_end(form) }}
     </div>
 
     <div class="col-md-4">
-
-        <section>
-
-            {% for question in questions %}
-                <b style="color: red;">{{ question.questiontext }}</b>
-                <button class="btn btn-primary btn-block" style="display: inline-block; width: 70px;">Add</button>
-                <br>
-            {% endfor %}
-        </section>
-
     </div>
 
-    {{ form_end(form) }}
+
 
 {% endblock body %}
 
 {% block javascripts %}
+    <script src="{{ asset('assets/js/select2.min.js') }}"></script>
     <script>
 
         var $collectionHolder;
-
-        var $addTagLink = $('<a href="#" class="add_tag_link">Add a question</a>');
-        var $newLinkLi = $('<li></li>').append($addTagLink);
+        var $newLinkLi = $('<li></li>').append();
 
         jQuery(document).ready(function() {
             $collectionHolder = $('ul.questions');
@@ -76,19 +64,32 @@
 
             $collectionHolder.data('index', $collectionHolder.find(':input').length);
 
-            $addTagLink.on('click', function(e) {
-                e.preventDefault();
-                addTagForm($collectionHolder, $newLinkLi);
+            var $select = $(".js-example-basic-single");
+            $str = {{(json_questions|json_encode|raw)}};
+            $result = JSON.parse($str);
+
+            $select.select2({
+                data: $result,
+                placeholder: "Select a question"
+            });
+
+            $select.on('select2:select', function (e) {
+                $text = e.params.data.text;
+                $id = e.params.data.id;
+                addTagForm($collectionHolder, $newLinkLi, $text, $id);
             });
         });
 
-        function addTagForm($collectionHolder, $newLinkLi) {
+        function addTagForm($collectionHolder, $newLinkLi, $text_question, $id_question) {
             var prototype = $collectionHolder.data('prototype');
             var index = $collectionHolder.data('index');
+
             var newForm = prototype;
             newForm = newForm.replace(/__name__/g, index);
             $collectionHolder.data('index', index + 1);
             var $newFormLi = $('<li></li>').append(newForm);
+            $newFormLi.find('.quiz_form_question_text').val($text_question);
+            $newFormLi.find('.quiz_form_id_question').val($id_question);
             $newLinkLi.before($newFormLi);
             addTagFormDeleteLink($newFormLi);
         }
@@ -103,21 +104,17 @@
                 $tagFormLi.remove();
             });
         }
-
     </script>
-
-
 
 {% endblock javascripts %}
 
 {% block stylesheets %}
 
+    <link href="{{ asset('assets/css/select2.min.css') }}" rel="stylesheet" />
     <style>
-        .quiz_form_questions{
-            display: inline-block;
-        }
-        .quiz_form_questions_box{
-            display: inline-block;
-        }
+
     </style>
+
 {% endblock  stylesheets%}
+
+

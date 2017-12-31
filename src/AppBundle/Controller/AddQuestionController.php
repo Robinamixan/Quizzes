@@ -13,7 +13,7 @@ class AddQuestionController extends Controller
     /**
      * @Route("/control/add_question", name="add_question")
      */
-    public function profileAction(Request $request)
+    public function addQuestionAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $question = new Question();
@@ -23,18 +23,22 @@ class AddQuestionController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            var_dump($question);
-            $question = $form->getData();
 
+            $question = $form->getData();
             foreach ($question->getAnswers() as $answer) {
+                $answer->setQuestion($question);
+
                 $em->persist($answer);
             }
 
             $em->persist($question);
             $em->flush();
+
+            $url = $this->generateUrl('add_question');
+            return $this->redirect($url);
         }
 
-        return $this->render('admin_lists/admin_add_question.html.twig', array(
+        return $this->render('admin_control/admin_add_question.html.twig', array(
             'form'          => $form->createView(),
         ));
     }

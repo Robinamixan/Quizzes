@@ -9,38 +9,32 @@
 namespace AppBundle\Form;
 
 
-use AppBundle\Entity\Answer;
 use AppBundle\Entity\Question;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class QuestionForm extends AbstractType
+class QuizQuestionForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('question_text', TextType::class, array(
+            ->add('question_text', TextareaType::class, array(
                 'label' => false,
                 'attr' => array(
-                    'class'         => 'form-control question_form_answers',
+                    'class'         => 'form-control quiz_form_question_text',
                     'placeholder'   => 'Question text',
                 )
             ))
-            ->add('answers', CollectionType::class, array(
+            ->add('id_question', TextType::class, array(
                 'label' => false,
-                'entry_type' => AnswerForm::class,
-                'entry_options' => array('label' => false,
-                    'attr' => array('class' => 'question_form_answers_box')),
-                'allow_add' => true,
-                'by_reference' => false,
-                'allow_delete' => true,
+                'attr' => array(
+                    'class'         => 'quiz_form_id_question',
+                    'hidden' => true,
+                )
             ))
-            ->add('save', SubmitType::class, array('label' => 'Create new question'))
         ;
     }
 
