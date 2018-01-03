@@ -13,7 +13,9 @@ class QuizzesListController extends Controller
      */
     public function quizzesListAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager(); // ...or getEntityManager() prior to Symfony 2.1
+        $em = $this->getDoctrine()->getManager();
+
+
         $connection = $em->getConnection();
         $sql_query = 'SELECT q.*, z1.users_amount
                       FROM Quizzes q LEFT JOIN
@@ -24,8 +26,33 @@ class QuizzesListController extends Controller
                       ON z1.id_quiz = q.id_quiz';
         $statement = $connection->prepare($sql_query);
         $statement->execute();
+
         $results = $statement->fetchAll();
 
+
+//        $qb1 = $em->createQueryBuilder();
+//        $qb1->select()
+//            ->from(Passage::class, 'p')
+//            ->leftJoin("p.quiz", "q")
+//            ->leftJoin("p.user", "u")
+//            ->addSelect('q.name')
+//            ->addSelect('q.date_of_create')
+//            ->addSelect('q.description')
+//            ->addSelect('q.flag_active')
+//            ->addSelect($qb1->expr()->count('u.id_user') . 'AS users_amount')
+//            ->groupBy('q.id_quiz')
+//        ;
+////        $dqlquery = $qb1->getDQL();
+////
+////        $qb2 = $em->createQueryBuilder();
+////        $qb2->select('q')
+////            ->from(Quiz::class, 'q')
+////            ->leftJoin(sprintf('(%s)', $dqlquery), 'z1', 'q.id_quiz=z1.id_quiz')
+////            ->addSelect('z1')
+////        ;
+//        $query = $qb1->getQuery();
+//
+//        $results = $query->getResult();
 
 
         $paginator  = $this->get('knp_paginator');
@@ -35,7 +62,7 @@ class QuizzesListController extends Controller
             5/*limit per page*/
         );
 
-        return $this->render('test/quizzes_list.html.twig', array(
+        return $this->render('quizzes_pages/quizzes_list.html.twig', array(
             'pagination'        => $pagination,
         ));
     }

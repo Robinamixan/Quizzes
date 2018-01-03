@@ -51,7 +51,7 @@
                                 {% else %}
                                     <p class="pull-left" style="background-color: red; padding: 5px; margin-top: 0; color: white;"> Unactive </p>
                                 {% endif %}
-                                <button class="btn btn-default pull-right">Start</button>
+                                <a class="btn btn-default pull-right" href="{{ path('game', {'id_quiz': quiz.id_quiz}) }}">Start</a>
                             </div>
                         </div>
 

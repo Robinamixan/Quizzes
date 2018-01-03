@@ -5,7 +5,6 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\Quiz;
 use AppBundle\Form\QuizForm;
-use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,13 +36,12 @@ class AddQuizController extends Controller
 
                 $quiz->removeQuestion($question);
                 $quiz->addQuestion($true_question);
-                //$em->persist($question);
             }
 
             $em->persist($quiz);
             $em->flush();
         }
-        //var_dump($quiz->getQuestions());die();
+
         $array = [];
         for($i = 0; $i< sizeof($questions); $i++) {
             $array [$i] = [];

@@ -3,13 +3,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="Conditions")
+ * @ORM\Table(name="Passage_Conditions")
  */
-class Condition
+class PassageCondition
 {
     /**
      * @ORM\Column(type="integer", name="id_condition")
@@ -21,16 +20,16 @@ class Condition
     /**
      * @ORM\Column(type="string", length=30, name="name")
      */
-    private $condition_name;
+    private $name;
 
     public function setAccessName(string $name)
     {
-        $this->condition_name = $name;
+        $this->name = $name;
     }
 
     public function getAccessName()
     {
-        return $this->condition_name;
+        return $this->name;
     }
 
     public function getIdAccess()

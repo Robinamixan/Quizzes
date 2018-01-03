@@ -10,7 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Access;
 use AppBundle\Entity\Answer;
-use AppBundle\Entity\Condition;
+use AppBundle\Entity\PassageCondition;
 use AppBundle\Entity\Passage;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\User;
@@ -116,7 +116,7 @@ class MySQLController extends Controller
             ->find(6);
 
         $condition = $this->getDoctrine()
-            ->getRepository(Condition::class)
+            ->getRepository(PassageCondition::class)
             ->find(1);
 
         $question = $this->getDoctrine()

@@ -68,6 +68,11 @@ class Answer
         return $this->id_answer;
     }
 
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
     public function __toString()
     {
         return $this->answer_text;

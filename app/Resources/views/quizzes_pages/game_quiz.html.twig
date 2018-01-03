@@ -1,0 +1,130 @@
+{# templates/security/login.html.twig #}
+{# ... you will probably extend your base template, like base.html.twig #}
+
+{% extends 'template.html.twig' %}
+
+{% block title %}
+    Add new quiz
+{% endblock title %}
+
+{% block body %}
+    <h2>{{ quiz.name }}</h2>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        <h3>Question</h3>
+        <div>
+            <div class="counter"> 1 </div>
+            from {{ questions_count }}
+        </div>
+        <ul class="questions list-unstyled">
+            {% for question in questions %}
+
+                {% if loop.first %}
+                    <li class="question_form_answers_box" id="answers_box_{{ loop.index }}">
+                {% else %}
+                    <li class="question_form_answers_box" id="answers_box_{{ loop.index }}" hidden>
+                {% endif %}
+
+                    <div style="background-color: gray">{{ question.questionText }}</div>
+
+                {% for answer in question.answers %}
+
+                    <div class="question_form_answer_box answer_{{ loop.index }}" id="{{ answer.idAnswer }}">
+                        <input type="checkbox" class="question_form_flag_right" value="{{ answer.idAnswer }}">
+                        <div class="answer_text" style="background-color: red; width: 300px" >{{ answer.answerText }}</div>
+                    </div>
+
+                {% endfor %}
+                    <button id="button_answer_{{ loop.index }}" class="button_answer">Answer</button>
+                </li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div id="ajax-results">here comes the result</div>
+
+    </div>
+
+{% endblock body %}
+
+{% block javascripts %}
+    <script>
+
+        var $collectionHolder;
+
+        jQuery(document).ready(function()
+        {
+            $collectionHolder = $('.question_form_answers_box');
+            checkbox = $('.question_form_flag_right');
+            $collectionHolder.on("click", checkbox, function (e) {
+                check = e.target;
+                if(check.checked){
+
+                    $current_box = check.closest('.question_form_answers_box');
+                    $($current_box).find('.question_form_flag_right').prop('checked', false);
+                    check.checked = true;
+                }
+            });
+
+            $('.button_answer').on('click', function (e) {
+                btn = $(this);
+                $current_box = $(btn.closest('.question_form_answers_box'));
+                $answer_flag = $current_box.find('.question_form_flag_right:checked');
+
+                $answer_box = $($answer_flag.closest('.question_form_answer_box'));
+
+                $id_answer = $answer_box.attr('id');
+
+                $.ajax({
+                    url:'{{ (path('game_ajax')) }}',
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        "id_passage": {{ passage.idPassage }},
+                        "id_answer": $id_answer
+                    },
+                    async: true,
+                    success: function (data)
+                    {
+                        console.log(data);
+                        $('div#ajax-results').html(data.output);
+
+                    }
+                });
+
+                $question_count = $('.counter');
+                $current_question = $question_count.text();
+                $current_question++;
+
+                if ($current_question === {{ questions_count }}) {
+                    window.location.replace("{{ path('game_result', {'id_passage': passage.idPassage}) }}");
+                } else {
+                    $question_count.text($current_question);
+                    $current_box.prop('hidden', true);
+                    $current_box.next().prop('hidden', false);
+                }
+
+
+            })
+        });
+    </script>
+{% endblock javascripts %}
+
+{% block stylesheets %}
+
+    <style>
+        .question_form_answer_box{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+
+{% endblock  stylesheets%}
+
+

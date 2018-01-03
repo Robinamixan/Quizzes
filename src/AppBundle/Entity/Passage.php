@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
@@ -19,7 +18,7 @@ class Passage
     private $id_passage;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Condition")
+     * @ORM\ManyToOne(targetEntity="PassageCondition")
      * @ORM\JoinColumn(name="id_condition", referencedColumnName="id_condition")
      */
     private $condition;
@@ -41,7 +40,7 @@ class Passage
      */
     private $results;
 
-    public function __construct(Quiz $quiz, User $user, Condition $condition)
+    public function __construct(Quiz $quiz, User $user, PassageCondition $condition)
     {
         $this->user = $user;
         $this->quiz = $quiz;
@@ -56,5 +55,20 @@ class Passage
     public function getIdPassage()
     {
         return $this->id_passage;
+    }
+
+    public function getQuiz()
+    {
+        return $this->quiz;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function getResults()
+    {
+        return $this->results;
     }
 }
