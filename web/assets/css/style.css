@@ -18,7 +18,7 @@
 ################################################################# */
 	* { 
 		margin: 0;
-		padding: 0px;
+		padding: 0;
 	} 
 
 body { 
@@ -217,7 +217,7 @@ a:focus {
 }
 
 #headerwrap h3, h5 {
-	color: white;
+	color: black;
 	font-weight: 400;
 }
 

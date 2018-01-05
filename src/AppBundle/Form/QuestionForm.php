@@ -8,10 +8,7 @@
 
 namespace AppBundle\Form;
 
-
-use AppBundle\Entity\Answer;
 use AppBundle\Entity\Question;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -40,7 +37,12 @@ class QuestionForm extends AbstractType
                 'by_reference' => false,
                 'allow_delete' => true,
             ))
-            ->add('save', SubmitType::class, array('label' => 'Create new question'))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Create new question',
+                'attr' => array(
+                    'class'         => 'btn btn-default',
+                )
+            ))
         ;
     }
 

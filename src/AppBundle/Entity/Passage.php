@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @ORM\Entity
@@ -40,16 +41,27 @@ class Passage
      */
     private $results;
 
+    /**
+     * @ORM\Column(type="date", name="date_of_create")
+     */
+    private $date_of_create;
+
     public function __construct(Quiz $quiz, User $user, PassageCondition $condition)
     {
         $this->user = $user;
         $this->quiz = $quiz;
         $this->condition = $condition;
+        $this->date_of_create = new \DateTime('now');
     }
 
-    public function addResult(Question $question, Answer $answer)
+    public function addResult(Question $question, Answer $answer, \DateTime $time)
     {
-        $this->results[] = new Result($question, $answer, $this);
+        $this->results[] = new Result($question, $answer, $time, $this);
+    }
+
+    public function setDateOfCreate(Date $date)
+    {
+        $this->date_of_create = $date;
     }
 
     public function getIdPassage()
@@ -67,8 +79,18 @@ class Passage
         return $this->user;
     }
 
+    public function getDateOfCreate()
+    {
+        return $this->date_of_create;
+    }
+
     public function getResults()
     {
         return $this->results;
+    }
+
+    public function setCondition(PassageCondition $condition)
+    {
+        $this->condition = $condition;
     }
 }

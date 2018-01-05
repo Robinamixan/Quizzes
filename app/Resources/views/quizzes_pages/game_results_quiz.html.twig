@@ -4,17 +4,42 @@
 {% extends 'template.html.twig' %}
 
 {% block title %}
-Admin Panel
+Results of Game
 {% endblock title %}
 
 
 {% block body %}
 
-    <h2>{{ passage.quiz.name}}</h2>
+    <h3>Results - {{ passage.quiz.name}}</h3>
+    <div class="col-md-4"></div>
 
-    {% for result in passage.results %}
-        <h4>{{ result.answer.answerText }} -> {{ result.answer.flagRight }}</h4>
-    {% endfor %}
+    <div class="col-md-4">
+
+        <ul class="questions_view_results list-unstyled">
+            {% for result in passage.results %}
+
+                <li id="question_view_box_{{ loop.index }}">
+
+                    {% if (result.answer.flagRight) %}
+                        <div class="question_view_question text-left" id="{{ result.question.idQuestion }}" >{{ result.question.questionText }} - time<{{ result.time }}></div>
+                        <div class="question_view_answer right_answer text-left">{{ result.answer.answerText }}</div>
+                    {% else %}
+                        <div class="question_view_question text-left" id="{{ result.question.idQuestion }}" >{{ result.question.questionText }} - time<{{ result.time }}></div>
+                        <div class="question_view_answer wrong_answer text-left">{{ result.answer.answerText }}</div>
+                    {% endif %}
+
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="col-md-4"></div>
+
+
 
 
 
@@ -27,5 +52,46 @@ Admin Panel
 
 
 {% block stylesheets %}
+
+    <style>
+
+        .questions_view_results {
+            background-color: white;
+            border: 2px solid #384452;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .question_view_question{
+            font-size: 18px;
+            background-color: lightgray;
+            margin-left: 5px;
+            margin-bottom: 2px;
+            padding-left: 15px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .question_view_answer{
+            background-color: lightgray;
+            margin-left: 5px;
+            margin-bottom: 10px;
+            padding-left: 15px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .right_answer {
+            background-color: #0e7732;
+            color: white;
+        }
+
+        .wrong_answer {
+            background-color: red;
+            color: white;
+        }
+
+    </style>
+
 
 {% endblock stylesheets %}

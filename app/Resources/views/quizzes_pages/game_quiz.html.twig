@@ -8,109 +8,194 @@
 {% endblock title %}
 
 {% block body %}
-    <h2>{{ quiz.name }}</h2>
-    <div class="col-md-4"></div>
+    <h2>Quiz - {{ quiz.name }}</h2>
+    <div class="col-md-1"></div>
 
-    <div class="col-md-4">
+    <div class="col-md-6">
         <h3>Question</h3>
-        <div>
-            <div class="counter"> 1 </div>
-            from {{ questions_count }}
-        </div>
-        <ul class="questions list-unstyled">
+
+        <ul class="questions_list list-unstyled">
             {% for question in questions %}
 
                 {% if loop.first %}
-                    <li class="question_form_answers_box" id="answers_box_{{ loop.index }}">
+                    <li class="question_box" id="question_box_{{ loop.index }}">
                 {% else %}
-                    <li class="question_form_answers_box" id="answers_box_{{ loop.index }}" hidden>
+                    <li class="question_box hidden" id="question_box_{{ loop.index }}" >
                 {% endif %}
 
-                    <div style="background-color: gray">{{ question.questionText }}</div>
+                    <div class="question_box_question" id="{{ question.idQuestion }}">{{ question.questionText }}</div>
 
                 {% for answer in question.answers %}
 
-                    <div class="question_form_answer_box answer_{{ loop.index }}" id="{{ answer.idAnswer }}">
-                        <input type="checkbox" class="question_form_flag_right" value="{{ answer.idAnswer }}">
-                        <div class="answer_text" style="background-color: red; width: 300px" >{{ answer.answerText }}</div>
+                    <div class="question_box_answer_box answer_{{ loop.index }}" id="{{ answer.idAnswer }}">
+                        <input id="flag_right_{{ answer.idAnswer }}" type="checkbox" class="question_box_flag_right" value="{{ answer.idAnswer }}">
+                        <label for="flag_right_{{ answer.idAnswer }}" class="answer_text text-left" >{{ answer.answerText }}</label>
                     </div>
 
                 {% endfor %}
-                    <button id="button_answer_{{ loop.index }}" class="button_answer">Answer</button>
+                    <button id="button_answer_{{ loop.index }}" class="button_answer btn btn-theme">Answer</button>
                 </li>
             {% endfor %}
 
         </ul>
-
+        <a href="{{ path('game_result', {'id_passage': passage.idPassage}) }}" class="button_result btn btn-default hidden" >Results</a>
     </div>
 
     <div class="col-md-4">
+        <h3>Answers  <b class="counter"> 0 </b> from <b>{{ questions_count }}</b> time<<b id="game_counter">00:00</b>></h3>
+        <div>
 
-        <div id="ajax-results">here comes the result</div>
+        </div>
 
+        <ul class="questions_view_results list-unstyled">
+            {% for question in questions %}
+
+                <li id="question_view_box_{{ loop.index }}">
+
+                    <div class="question_view_result" id="{{ question.idQuestion }}" >{{ question.questionText }}</div>
+
+                </li>
+            {% endfor %}
+
+        </ul>
     </div>
+
+    <div class="col-md-1"></div>
 
 {% endblock body %}
 
 {% block javascripts %}
-    <script>
 
+    <script src="{{ asset('assets/js/jquery.timer.js') }}"></script>
+    <script>
         var $collectionHolder;
 
         jQuery(document).ready(function()
         {
-            $collectionHolder = $('.question_form_answers_box');
-            checkbox = $('.question_form_flag_right');
+            $collectionHolder = $('.question_box');
+            checkbox = $('.question_box_flag_right');
+            $all_time = '00:00';
+
             $collectionHolder.on("click", checkbox, function (e) {
                 check = e.target;
                 if(check.checked){
 
-                    $current_box = check.closest('.question_form_answers_box');
-                    $($current_box).find('.question_form_flag_right').prop('checked', false);
+                    $current_box = check.closest('.question_box');
+                    $($current_box).find('.question_box_flag_right').prop('checked', false);
                     check.checked = true;
                 }
             });
 
             $('.button_answer').on('click', function (e) {
                 btn = $(this);
-                $current_box = $(btn.closest('.question_form_answers_box'));
-                $answer_flag = $current_box.find('.question_form_flag_right:checked');
+                $current_box = $(btn.closest('.question_box'));
+                $answer_flag = $current_box.find('.question_box_flag_right:checked');
+                if ($answer_flag.length) {
 
-                $answer_box = $($answer_flag.closest('.question_form_answer_box'));
 
-                $id_answer = $answer_box.attr('id');
+                    $current_time = $game_counter.text();
+                    $answer_time = timeToSeconds($current_time) - timeToSeconds($all_time);
+                    $all_time = $current_time;
+                    $answer_time = secondsToTime($answer_time);
 
+                    $answer_box = $($answer_flag.closest('.question_box_answer_box'));
+                    $id_answer = $answer_box.attr('id');
+
+                    sendAjaxResult($id_answer, $answer_time);
+
+                    $question_count = $('.counter');
+                    $current_question = $question_count.text();
+                    $current_question++;
+                    if ($current_question === {{ questions_count }}) {
+                        $question_count.text($current_question);
+                        $current_box.addClass('hidden');
+                        $('.button_result').removeClass("hidden");
+                        $('.button_answer').addClass('hidden');
+                        Timer.stop().once();
+
+                        {#window.location.replace("{{ path('game_result', {'id_passage': passage.idPassage}) }}");#}
+                    } else {
+
+                        $question_count.text($current_question);
+                        $current_box.addClass('hidden');
+                        $current_box.next().removeClass("hidden");
+
+                    }
+                } else {
+                    alert("Choose one");
+                }
+
+
+
+            });
+
+            var $game_counter = $('#game_counter');
+            var incrementTime = 1000;
+            var currentTime = 0;
+            $(function() {
+                $game_counter = $('#game_counter');
+                Timer = $.timer(updateTimer, incrementTime, true);
+            });
+
+            function sendAjaxResult(id_answer, answer_time) {
                 $.ajax({
                     url:'{{ (path('game_ajax')) }}',
                     type: "POST",
                     dataType: "json",
                     data: {
                         "id_passage": {{ passage.idPassage }},
-                        "id_answer": $id_answer
+                        "id_answer": id_answer,
+                        "answer_time": answer_time
                     },
                     async: true,
                     success: function (data)
                     {
                         console.log(data);
-                        $('div#ajax-results').html(data.output);
+                        $question_box = $current_box.find('.question_box_question');
+                        $id_question = $question_box.attr('id');
+                        $question_view = $('#'+$id_question+'.question_view_result');
 
+                        if (data.result === 'right') {
+                            $question_view.addClass("right_answer");
+                        } else {
+                            $question_view.addClass("wrong_answer");
+                        }
                     }
                 });
+            }
 
-                $question_count = $('.counter');
-                $current_question = $question_count.text();
-                $current_question++;
+            function updateTimer() {
+                var timeString = formatTime(currentTime);
+                $game_counter.html(timeString);
+                currentTime += incrementTime;
+            }
 
-                if ($current_question === {{ questions_count }}) {
-                    window.location.replace("{{ path('game_result', {'id_passage': passage.idPassage}) }}");
-                } else {
-                    $question_count.text($current_question);
-                    $current_box.prop('hidden', true);
-                    $current_box.next().prop('hidden', false);
-                }
+            function formatTime(time) {
+
+                time = time / 10;
+                var min = parseInt(time / 6000),
+                    sec = parseInt(time / 100) - (min * 60);
+                return (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2) ;
+            }
+
+            function pad(number, length) {
+                var str = '' + number;
+                while (str.length < length) {str = '0' + str;}
+                return str;
+            }
+
+            function timeToSeconds(time) {
+                time = time.split(/:/);
+                return time[0] * 60 + time[1]*1;
+            }
+
+            function secondsToTime(time) {
+                var min = parseInt(time / 60),
+                    sec = parseInt(time %60 );
+                return (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2) ;
+            }
 
 
-            })
         });
     </script>
 {% endblock javascripts %}
@@ -118,10 +203,62 @@
 {% block stylesheets %}
 
     <style>
-        .question_form_answer_box{
+        .question_box_answer_box{
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 5px;
+        }
+
+        .question_box {
+            background-color: white;
+            padding: 10px;
+            border: 2px solid #384452;
+            border-radius: 10px;
+        }
+
+        .question_box_question {
+            font-size: 18px;
+            background-color: white;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #384452;
+        }
+
+        .question_box_flag_right {
+
+        }
+
+        .answer_text {
+            background-color: white;
+            width: 300px;
+            padding-left: 15px;
+            margin-top: 5px;
+            margin-bottom: 0px;
+        }
+
+        .questions_view_results {
+            background-color: white;
+            border: 2px solid #384452;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .question_view_result{
+            background-color: lightgray;
+            margin-left: 5px;
+            margin-bottom: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        .right_answer {
+            background-color: #0e7732;
+            color: white;
+        }
+
+        .wrong_answer {
+            background-color: red;
+            color: white;
         }
     </style>
 

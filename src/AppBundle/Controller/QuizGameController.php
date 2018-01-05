@@ -53,7 +53,10 @@ class QuizGameController extends Controller
         $em = $this->getDoctrine()->getManager();
         $id_passage = $request->request->get('id_passage');
         $id_answer = $request->request->get('id_answer');
-        $time = "ss";
+        $answer_time = $request->request->get('answer_time');
+
+        $format = 'i:s';
+        $time = \DateTime::createFromFormat($format, $answer_time);
 
         $answer = $this->getDoctrine()
             ->getRepository(Answer::class)
@@ -65,16 +68,16 @@ class QuizGameController extends Controller
 
         $question = $answer->getQuestion();
 
-        $passage->addResult($question, $answer);
+        $passage->addResult($question, $answer, $time);
         $em->persist($passage);
         $em->flush();
 
 
         if (($answer) && ($answer->getFlagRight())) {
-            $arrData = ['output' => "right"];
+            $arrData = ['result' => "right"];
             return new JsonResponse($arrData);
         } else {
-            $arrData = ['output' => "wrong"];
+            $arrData = ['result' => "wrong"];
             return new JsonResponse($arrData);
         }
     }
@@ -91,7 +94,24 @@ class QuizGameController extends Controller
             ->getRepository(Passage::class)
             ->find($id_passage);
 
-        $results = $passage->getResults();
+        $condition = $this->getDoctrine()
+            ->getRepository(PassageCondition::class)
+            ->findOneByName('Finished');
+
+        $passage->setCondition($condition);
+        $em->persist($passage);
+        $em->flush();
+
+        $results = $passage->getResults()->getValues();
+
+//        foreach ($results as $result) {
+//            $answer = $result->getAnswer();
+//            if (!$answer->getFlagRight()) {
+//                $true_question = $this->getDoctrine()
+//                    ->getRepository(Answer::class)
+//                    ->findOneBy($answer->getQuestion()->getValues());
+//            }
+//        }
 
         return $this->render('quizzes_pages/game_results_quiz.html.twig', array(
             'passage'               => $passage,

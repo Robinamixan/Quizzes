@@ -40,17 +40,22 @@ class Result
      */
     private $answer;
 
-    public function __construct(Question $question, Answer $answer, Passage $passage)
+    public function __construct(Question $question, Answer $answer,  \DateTime $time, Passage $passage)
     {
         $this->passage = $passage;
         $this->answer = $answer;
         $this->question = $question;
-        $this->time = \DateTime::createFromFormat('H:i','0:10');
+        $this->time = $time;
     }
 
     public function getAnswer()
     {
         return $this->answer;
+    }
+
+    public function getTime()
+    {
+        return $this->time->format('i:s') ;
     }
 
     public function getQuestion()

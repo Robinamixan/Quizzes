@@ -69,6 +69,22 @@
                     check.checked = true;
                 }
             });
+
+            $('#question_form_save').on("click", function (e) {
+
+
+
+                if (!$('.question_form_flag_right').length) {
+                    e.preventDefault();
+                    alert('Choose one answer')
+                } else {
+                    if (!$('.question_form_flag_right:checked').length) {
+                        e.preventDefault();
+                        alert('Choose one right answer')
+                    }
+                }
+
+            });
         });
 
         function addTagForm($collectionHolder, $newLinkLi)
