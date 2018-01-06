@@ -19,9 +19,9 @@
     <script src="{{ asset('assets/js/jquery.ajaxgrid.js') }}"></script>
 <script>
     $('#grid_quizzes').simplegrid({
-        ajax_url: '{{ (path('quiz_list_ajax')) }}',
-        array_headers: ['ID', 'Name', 'Date of create', 'Description', 'Status'],
-        array_field_filters: [['ID', 'Name', 'Date of create'], ['text', 'text', 'date']],
+        ajax_url: '{{ (path('question_list_ajax')) }}',
+        array_headers: ['ID', 'Text'],
+        array_field_filters: [['ID', 'Text', 'Answers'], ['text', 'text', 'text']],
         notes_per_page: 10
     });
 </script>

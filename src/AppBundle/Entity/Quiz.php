@@ -86,7 +86,7 @@ class Quiz
 
     public function getDateOfCreate()
     {
-        return $this->date_of_create;
+        return $this->date_of_create->format('Y-m-d') ;
     }
 
     public function getFlagActive()
