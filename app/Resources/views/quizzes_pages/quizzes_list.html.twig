@@ -46,12 +46,15 @@
 
                             <div class="panel-footer" style="height: 50px; padding-top: 6px">
 
-                                {% if quiz.flag_active %}
-                                    <p class="pull-left" style="background-color: green; padding: 5px; margin-top: 0; color: white;"> Active </p>
+                                {% if quiz.flag_passed %}
+                                    <p class="pull-left" style="background-color: green; padding: 5px; margin-top: 0; color: white;"> Passed </p>
+                                    <p class="pull-left" style="background-color: green; padding: 5px; margin-top: 0; color: white;"> Your result - {{ quiz.result }} </p>
+                                    <a class="btn btn-default pull-right" href="{{ path('game_result', {'id_passage': quiz.id_passage}) }}">Result</a>
                                 {% else %}
-                                    <p class="pull-left" style="background-color: red; padding: 5px; margin-top: 0; color: white;"> Unactive </p>
+                                    <p class="pull-left" style="background-color: blue; padding: 5px; margin-top: 0; color: white;"> Not passed </p>
+                                    <a class="btn btn-default pull-right" href="{{ path('game', {'id_quiz': quiz.id_quiz}) }}">Start</a>
                                 {% endif %}
-                                <a class="btn btn-default pull-right" href="{{ path('game', {'id_quiz': quiz.id_quiz}) }}">Start</a>
+
                             </div>
                         </div>
 

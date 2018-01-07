@@ -1,10 +1,11 @@
-;(function($){Query.fn.simplegrid = function(options){
+;(function($){jQuery.fn.simplegrid = function(options){
 
         options = $.extend({
             ajax_url: '',
             array_headers: '',
             array_field_filters: '',
             result_array: '',
+            filter_active: true,
             filters: {},
             all_notes: 0,
             notes_per_page: 10,
@@ -24,48 +25,51 @@
         return this.each(make);
     };
 
-    function drawFilters(options) {
-        $panel_filters = $('<div class="filters_panel"></div>');
+    function drawFilters(options)
+    {
+        if (options.filter_active) {
+            $panel_filters = $('<div class="filters_panel"></div>');
 
-        $.each(options.array_field_filters[0], function(index, value ) {
-            $input_type = options.array_field_filters[1][index];
-            if ($input_type === 'text') {
-                $input_name = options.array_field_filters[0][index];
-                $input_placeholder = options.array_field_filters[0][index];
-                $field = $('<input class="form-control filter" type="' + $input_type + '" name="' + $input_name + '" placeholder="' + $input_placeholder + '">');
-                $panel_filters.append($field);
-            } else {
-                if ($input_type === 'date') {
-                    $date_contain = $('<div class="date_contain"></div>');
-                    $date_contain_with = $('<div class="date"></div>');
-                    $date_contain_until = $('<div class="date"></div>');
-
+            $.each(options.array_field_filters[0], function(index, value ) {
+                $input_type = options.array_field_filters[1][index];
+                if ($input_type === 'text') {
                     $input_name = options.array_field_filters[0][index];
-                    $date_field_with = $('<input class="form-control date date_with filter" type="' + $input_type + '" name="' + $input_name + ' with">');
-                    $date_field_until = $('<input class="form-control date date_until filter" type="' + $input_type + '" name="' + $input_name + ' until">');
+                    $input_placeholder = options.array_field_filters[0][index];
+                    $field = $('<input class="form-control filter" type="' + $input_type + '" name="' + $input_name + '" placeholder="' + $input_placeholder + '">');
+                    $panel_filters.append($field);
+                } else {
+                    if ($input_type === 'date') {
+                        $date_contain = $('<div class="date_contain"></div>');
+                        $date_contain_with = $('<div class="date"></div>');
+                        $date_contain_until = $('<div class="date"></div>');
 
-                    $date_contain_with.append($date_field_with);
-                    $date_contain_until.append($date_field_until);
-                    $date_contain.append($date_contain_with);
-                    $date_contain.append($date_contain_until);
+                        $input_name = options.array_field_filters[0][index];
+                        $date_field_with = $('<input class="form-control date date_with filter" type="' + $input_type + '" name="' + $input_name + ' with">');
+                        $date_field_until = $('<input class="form-control date date_until filter" type="' + $input_type + '" name="' + $input_name + ' until">');
 
-                    $panel_filters.append($date_contain);
-                }
-            }
-        });
+                        $date_contain_with.append($date_field_with);
+                        $date_contain_until.append($date_field_until);
+                        $date_contain.append($date_contain_with);
+                        $date_contain.append($date_contain_until);
 
-        $btn_filter = $('<button class="btn btn-default add_filter">Add Filters</button>');
-        $btn_filter.on('click', function (e) {
-            options.filters = {};
-            $('.filter').each(function (i, elem) {
-                if ($(elem).val() !== '') {
-                    options.filters[$(elem).attr('name')] = $(elem).val();
+                        $panel_filters.append($date_contain);
+                    }
                 }
             });
-            drawContainTable(options);
-        });
-        $panel_filters.append($btn_filter);
-        $(root).append($panel_filters);
+
+            $btn_filter = $('<button class="btn btn-default add_filter">Add Filters</button>');
+            $btn_filter.on('click', function (e) {
+                options.filters = {};
+                $('.filter').each(function (i, elem) {
+                    if ($(elem).val() !== '') {
+                        options.filters[$(elem).attr('name')] = $(elem).val();
+                    }
+                });
+                drawContainTable(options);
+            });
+            $panel_filters.append($btn_filter);
+            $(root).append($panel_filters);
+        }
     }
 
     function drawTable(options) {
@@ -114,6 +118,14 @@
         $btn_prev.on('click', function (e) {
             if (options.page > 1) {
                 options.page--;
+                $('.current_page').val(options.page);
+                drawContainTable(options);
+            }
+        });
+        $text_find.on('keyup', function (e) {
+            input = $(this);
+            if ((input.val() >= 1) && (input.val() <= $all_pages)) {
+                options.page = input.val();
                 $('.current_page').val(options.page);
                 drawContainTable(options);
             }

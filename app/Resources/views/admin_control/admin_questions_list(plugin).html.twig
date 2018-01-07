@@ -22,7 +22,8 @@
         ajax_url: '{{ (path('question_list_ajax')) }}',
         array_headers: ['ID', 'Text'],
         array_field_filters: [['ID', 'Text', 'Answers'], ['text', 'text', 'text']],
-        notes_per_page: 10
+        notes_per_page: 10,
+        filter_active: false
     });
 </script>
 

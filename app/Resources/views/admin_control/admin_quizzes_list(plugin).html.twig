@@ -18,11 +18,14 @@
 {% block javascripts %}
     <script src="{{ asset('assets/js/jquery.ajaxgrid.js') }}"></script>
 <script>
+
+
     $('#grid_quizzes').simplegrid({
         ajax_url: '{{ (path('quiz_list_ajax')) }}',
         array_headers: ['ID', 'Name', 'Date of create', 'Description', 'Status'],
         array_field_filters: [['ID', 'Name', 'Date of create'], ['text', 'text', 'date']],
-        notes_per_page: 10
+        notes_per_page: 3,
+        filter_active: false
     });
 </script>
 

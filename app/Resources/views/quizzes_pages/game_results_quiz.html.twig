@@ -10,11 +10,11 @@ Results of Game
 
 {% block body %}
 
-    <h3>Results - {{ passage.quiz.name}}</h3>
+    <h2>Results - {{ passage.quiz.name}}</h2>
     <div class="col-md-4"></div>
 
     <div class="col-md-4">
-
+        <h3>Answers</h3>
         <ul class="questions_view_results list-unstyled">
             {% for result in passage.results %}
 
@@ -37,7 +37,24 @@ Results of Game
 
     </div>
 
-    <div class="col-md-4"></div>
+    <div class="col-md-4">
+
+        <h3>Top players</h3>
+        <ul class="questions_view_results list-unstyled">
+            {% for note in passages %}
+
+                <li id="question_view_box_{{ loop.index }}">
+
+                    <div class="question_view_question text-left" id="{{ note.username }}" >{{ note.username }} - <{{ note.right_amount }}></div>
+
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
 
 
 

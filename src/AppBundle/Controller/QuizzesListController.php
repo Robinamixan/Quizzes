@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Passage;
+use AppBundle\Entity\Quiz;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,45 +16,87 @@ class QuizzesListController extends Controller
     public function quizzesListAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
 
+        $qb1 = $em->createQueryBuilder();
+        $qb1->select()
+            ->from(Passage::class, 'p')
+            ->leftJoin("p.quiz", "q")
+            ->leftJoin("p.user", "u")
+            ->addSelect('q.id_quiz')
+            ->addSelect($qb1->expr()->count('u.id_user') . 'AS users_amount')
+            ->andWhere('q.flag_active=1')
+            ->addGroupBy('q.id_quiz')
+        ;
+        $query = $qb1->getQuery();
+        $users_pas_quiz = $query->getResult();
 
-        $connection = $em->getConnection();
-        $sql_query = 'SELECT q.*, z1.users_amount
-                      FROM Quizzes q LEFT JOIN
-                        (SELECT pas.id_quiz AS id_quiz, count(id_user) AS users_amount
-                        FROM Passages pas
-                        WHERE pas.id_condition = 3
-                        GROUP BY pas.id_quiz) z1
-                      ON z1.id_quiz = q.id_quiz';
-        $statement = $connection->prepare($sql_query);
-        $statement->execute();
+        $qb3 = $em->createQueryBuilder();
+        $qb3->select()
+            ->from(Passage::class, 'p')
+            ->leftJoin("p.user", "u")
+            ->leftJoin("p.results", "r")
+            ->leftJoin("r.answer", "a")
+            ->leftJoin("p.quiz", "q")
+            ->addSelect('q.id_quiz')
+            ->addSelect('p.id_passage')
+            ->addSelect($qb3->expr()->count('a.id_answer') . 'AS right_amount')
+            ->andWhere('q.flag_active=1')
+            ->andWhere('a.flag_right=1')
+            ->andWhere('u.id_user=' . $user->getIdUser())
+            ->addGroupBy('p.id_passage')
+        ;
+        $query = $qb3->getQuery();
+        $passeges = $query->getResult();
 
-        $results = $statement->fetchAll();
+        //var_dump($passeges); die();
 
+        $qb2 = $em->createQueryBuilder();
+        $qb2->select()
+            ->from(Quiz::class, 'q')
+            ->addSelect('q.id_quiz')
+            ->addSelect('q.name')
+            ->addSelect('q.description')
+            ->addSelect('q.date_of_create')
+            ->andWhere('q.flag_active=1')
+        ;
+        $query = $qb2->getQuery();
+        $quizzes= $query->getResult();
 
-//        $qb1 = $em->createQueryBuilder();
-//        $qb1->select()
-//            ->from(Passage::class, 'p')
-//            ->leftJoin("p.quiz", "q")
-//            ->leftJoin("p.user", "u")
-//            ->addSelect('q.name')
-//            ->addSelect('q.date_of_create')
-//            ->addSelect('q.description')
-//            ->addSelect('q.flag_active')
-//            ->addSelect($qb1->expr()->count('u.id_user') . 'AS users_amount')
-//            ->groupBy('q.id_quiz')
-//        ;
-////        $dqlquery = $qb1->getDQL();
-////
-////        $qb2 = $em->createQueryBuilder();
-////        $qb2->select('q')
-////            ->from(Quiz::class, 'q')
-////            ->leftJoin(sprintf('(%s)', $dqlquery), 'z1', 'q.id_quiz=z1.id_quiz')
-////            ->addSelect('z1')
-////        ;
-//        $query = $qb1->getQuery();
-//
-//        $results = $query->getResult();
+        $results = [];
+
+        foreach ($quizzes as $quiz) {
+            $compare_counts = false;
+            $compare_user = false;
+            foreach ($users_pas_quiz as $pass_quiz) {
+                if ($quiz['id_quiz'] == $pass_quiz['id_quiz']) {
+                    $quiz = array_merge($quiz, $pass_quiz);
+                    $compare_counts = true;
+                    break;
+                }
+            }
+            if (!$compare_counts) {
+                $quiz['users_amount'] = 0;
+            }
+            foreach ($passeges as $pass_user) {
+                if ($quiz['id_quiz'] == $pass_user['id_quiz']) {
+                    $quiz['flag_passed'] = true;
+                    $quiz['result'] = $pass_user['right_amount'];
+                    $quiz['id_passage'] = $pass_user['id_passage'];
+                    $compare_user = true;
+                    break;
+                }
+            }
+            if (!$compare_user) {
+                $quiz['flag_passed'] = false;
+                $quiz['result'] = 0;
+                $quiz['id_passage'] = 0;
+            }
+            $results[] = $quiz;
+
+        }
+
+        //var_dump($results); die();
 
 
         $paginator  = $this->get('knp_paginator');

@@ -37,24 +37,6 @@ class AdminQuestionListController extends Controller
             ->from(Question::class, 'q')
             ->addSelect($qb2->expr()->count('q.id_quetion') . 'AS all_notes');
 
-        if ($filters) {
-            foreach ($filters as $key => $value) {
-                switch ($key) {
-                    case 'ID':
-                        $qb2->andWhere($qb2->expr()->like('q.id_quetion', ':' . $key))
-                            ->setParameter($key,'%' . $value . '%');
-                        break;
-                    case 'Text':
-                        $qb2->andWhere($qb2->expr()->like('q.question_text', ':' . $key))
-                            ->setParameter($key,'%' . $value . '%');
-                        break;
-                }
-            }
-        }
-
-        $query = $qb2->getQuery();
-        $all_notes = $query->getResult();
-
         switch ($sort_field) {
             case 'ID': $sort_field = 'id_quetion'; break;
             case 'Text': $sort_field = 'question_text'; break;
@@ -75,14 +57,21 @@ class AdminQuestionListController extends Controller
                     case 'ID':
                         $qb1->andWhere($qb1->expr()->like('q.id_quetion', ':' . $key))
                             ->setParameter($key,'%' . $value . '%');
+                        $qb2->andWhere($qb2->expr()->like('q.id_quetion', ':' . $key))
+                            ->setParameter($key,'%' . $value . '%');
                         break;
                     case 'Text':
                         $qb1->andWhere($qb1->expr()->like('q.question_text', ':' . $key))
+                            ->setParameter($key,'%' . $value . '%');
+                        $qb2->andWhere($qb2->expr()->like('q.question_text', ':' . $key))
                             ->setParameter($key,'%' . $value . '%');
                         break;
                 }
             }
         }
+
+        $query = $qb2->getQuery();
+        $all_notes = $query->getResult();
 
         $query = $qb1->getQuery();
         $questions = $query->getResult();

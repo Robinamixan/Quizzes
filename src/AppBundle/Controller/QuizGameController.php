@@ -104,18 +104,32 @@ class QuizGameController extends Controller
 
         $results = $passage->getResults()->getValues();
 
-//        foreach ($results as $result) {
-//            $answer = $result->getAnswer();
-//            if (!$answer->getFlagRight()) {
-//                $true_question = $this->getDoctrine()
-//                    ->getRepository(Answer::class)
-//                    ->findOneBy($answer->getQuestion()->getValues());
-//            }
-//        }
+        $qb3 = $em->createQueryBuilder();
+        $qb3->select()
+            ->from(Passage::class, 'p')
+            ->leftJoin("p.user", "u")
+            ->leftJoin("p.results", "r")
+            ->leftJoin("r.answer", "a")
+            ->leftJoin("p.quiz", "q")
+            ->addSelect('u.username')
+            ->addSelect('p.id_passage')
+            ->addSelect($qb3->expr()->count('a.id_answer') . 'AS right_amount')
+            ->andWhere('q.flag_active=1')
+            ->andWhere('a.flag_right=1')
+            ->andWhere('q.id_quiz=' . $passage->getQuiz()->getIdQuiz())
+            ->addGroupBy('p.id_passage')
+            ->orderBy('right_amount', 'DESC')
 
-        return $this->render('quizzes_pages/game_results_quiz.html.twig', array(
+        ;
+        $query = $qb3->getQuery();
+        $passages = $query->getResult();
+
+        //var_dump($passeges); die();
+
+        return $this->render('quizzes_pages/game_results_quiz.html.twig', [
             'passage'               => $passage,
             'results'               => $results,
-        ));
+            'passages'               => $passages,
+        ]);
     }
 }
