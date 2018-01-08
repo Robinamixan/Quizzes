@@ -1,9 +1,11 @@
-;(function($){jQuery.fn.simplegrid = function(options){
+;(function($){jQuery.fn.ajaxgrid = function(options){
 
         options = $.extend({
             ajax_url: '',
-            array_headers: '',
+            array_sorted_fields: '',
             array_field_filters: '',
+            url_notes_edit: '',
+            url_notes_delete: '',
             result_array: '',
             filter_active: true,
             filters: {},
@@ -16,7 +18,7 @@
 
         var make = function(){
             root = this;
-            options.sort_field = options.array_headers[0];
+            options.sort_field = options.array_sorted_fields[0];
             options.result_array = sendAjax(options);
             drawFilters(options);
             drawTable(options);
@@ -87,7 +89,7 @@
         $table.append($content);
         options.result_array = sendAjax(options);
         $.each(options.result_array, function( index, value ) {
-            $content.append(htmlAddRow(options.result_array[index]));
+            $content.append(htmlAddRow(options.result_array[index], index+1, options));
         });
     }
 
@@ -147,22 +149,22 @@
             $icon_sort = '<span></span>';
             $header = $('<a class="sort_header" href="#">' + index + $icon_sort +'</a>');
 
-            $header.on('click', function (e) {
+            if ($.inArray( index, options.array_sorted_fields) !== -1) {
+                $header.on('click', function (e) {
 
-                if (options.sort_field === index) {
-                    if (options.sort_direction === 'ASC')
-                        options.sort_direction = "DESC";
-                    else
-                        options.sort_direction = "ASC";
-                } else {
-
-                    options.sort_field = index;
-                    options.sort_direction = 'ASC';
-                }
-                drawContainTable(options);
-                setIconSort($(this).find('span'));
-            });
-
+                    if (options.sort_field === index) {
+                        if (options.sort_direction === 'ASC')
+                            options.sort_direction = "DESC";
+                        else
+                            options.sort_direction = "ASC";
+                    } else {
+                        options.sort_field = index;
+                        options.sort_direction = 'ASC';
+                    }
+                    drawContainTable(options);
+                    setIconSort($(this).find('span'));
+                });
+            }
             $contain.append($header);
             $row.append($contain);
         });
@@ -217,12 +219,39 @@
         }
     }
 
-    function htmlAddRow($array_row){
+    function htmlAddRow($array_row, index, options) {
         $row = $('<tr class="contain_row"></tr>');
         $.each($array_row, function( index, value ) {
             $contain = $('<td>' + value + '</td>');
             $row.append($contain);
         });
+        if ((options.url_notes_edit.length !== 0) || (options.url_notes_delete.length !== 0)) {
+            $contain = $('<td></td>');
+            if (options.url_notes_edit.length !== 0) {
+                button_edit = $(
+                    '<a class="btn btn-default" href="' +
+                    options.url_notes_edit[0] +
+                    '/' +
+                    $array_row[options.url_notes_edit[1]] + '">' +
+                    '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>' +
+                    '</a>'
+                );
+                $contain.append(button_edit);
+            }
+            if (options.url_notes_delete.length !== 0) {
+                button_delete = $(
+                    '<a class="btn btn-default" href="' +
+                    options.url_notes_delete[0] +
+                    '/' +
+                    $array_row[options.url_notes_delete[1]] + '">' +
+                    '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>' +
+                    '</a>'
+                );
+                $contain.append(button_delete);
+            }
+
+            $row.append($contain);
+        }
         return $row;
     }
 })(jQuery);

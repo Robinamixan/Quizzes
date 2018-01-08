@@ -3,14 +3,13 @@
 
 {% extends 'admin_control/admin_panel.html.twig' %}
 {% block title %}
-    List of Quizzes
+    List of Users
 {% endblock title %}
 
 {% block contain %}
 
     <div id="grid_quizzes">
-        <h4>Quizzes</h4>
-
+        <h4>Users</h4>
     </div>
 
 {% endblock contain %}
@@ -20,13 +19,11 @@
 <script>
 
     $('#grid_quizzes').ajaxgrid({
-        ajax_url: '{{ (path('quiz_list_ajax')) }}',
-        array_sorted_fields: ['ID', 'Name', 'Date of create', 'Description', 'Status'],
-        array_field_filters: [['ID', 'Name', 'Date of create'], ['text', 'text', 'date']],
+        ajax_url: '{{ (path('user_list_ajax')) }}',
+        array_sorted_fields: ['ID', 'Username', 'Email', 'Full Name', 'Access', 'Condition'],
+        array_field_filters: [['ID', 'Username', 'Email', 'Full Name'], ['text', 'text', 'text', 'text']],
         notes_per_page: 10,
-        filter_active: true,
-        url_notes_edit: ['{{ (path('edit_quiz')) }}', 'ID'],
-        url_notes_delete: ['{{ (path('delete_quiz')) }}', 'ID']
+        filter_active: true
     });
 
 </script>
@@ -43,17 +40,8 @@
             padding: 5px;
         }
 
-        .filter {
-            display: inline-block !important;
-        }
-
         th {
             text-align: center !important;
-
-        }
-
-        td {
-            min-width: 100px;
         }
 
         .sort_header {
@@ -61,6 +49,7 @@
         }
 
         .filters_panel {
+            display: block;
             background-color: white;
             padding: 5px;
             border: 1px solid black;
@@ -70,7 +59,7 @@
         }
 
         .date {
-            display: block;
+            display: inline-block;
         }
 
         .add_filter {
@@ -83,7 +72,7 @@
         }
 
         .panel_pagination {
-            display: inline-block;
+            display: block;
             padding: 5px;
             background-color: white;
             border: 1px solid black;

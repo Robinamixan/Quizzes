@@ -1,14 +1,14 @@
 {# templates/security/login.html.twig #}
 {# ... you will probably extend your base template, like base.html.twig #}
 
-{% extends 'template.html.twig' %}
+{% extends 'admin_control/admin_panel.html.twig' %}
 {% form_theme form _self %}
 
 {% block title %}
-    Add new question
+    {{ button_text }}
 {% endblock title %}
 
-{% block body %}
+{% block contain %}
 
     <div class="col-md-4">
     </div>
@@ -16,8 +16,9 @@
     <div class="col-md-4">
         <section class="add_question_form">
             {{ form_start(form) }}
+            <h4>Question</h4>
             {{ form_row(form.question_text) }}
-            <h3>Answers</h3>
+            <h4>Answers</h4>
             <ul class="answers list-unstyled" data-prototype="{{ form_widget(form.answers.vars.prototype)|e('html_attr') }}">
                 {% for answer in form.answers %}
                     <li class="answer">
@@ -31,7 +32,7 @@
     </div>
     <div class="col-md-4">
     </div>
-{% endblock body %}
+{% endblock contain %}
 
 {% block form_row %}
     {{ form_label(form) }}
@@ -70,10 +71,8 @@
                 }
             });
 
+            $('#question_form_save').text('{{ button_text }}');
             $('#question_form_save').on("click", function (e) {
-
-
-
                 if (!$('.question_form_flag_right').length) {
                     e.preventDefault();
                     alert('Choose one answer')
@@ -83,8 +82,8 @@
                         alert('Choose one right answer')
                     }
                 }
-
             });
+
         });
 
         function addTagForm($collectionHolder, $newLinkLi)
@@ -102,7 +101,8 @@
 
         function addTagFormDeleteLink($tagFormLi)
         {
-            var $removeFormA = $('<a href="#" style="display: inline-block">Del</a>');
+            var $removeFormA = $('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
+
             $tagFormLi.append($removeFormA);
             $removeFormA.on('click', function(e) {
                 e.preventDefault();
@@ -112,8 +112,21 @@
     </script>
 {% endblock javascripts %}
 
-{% block stylesheets %}
+{% block containstylesheets %}
     <style>
+        input[type="checkbox"]{
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+        }
+
+        .add_question_form {
+            border: 2px solid black;
+            border-radius: 10px;
+            padding: 5px;
+            background-color: #384452;
+        }
+
         li.answer{
             display: flex;
             justify-content: center;
@@ -128,6 +141,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-bottom: 10px;
         }
     </style>
-{% endblock  stylesheets%}
+{% endblock  containstylesheets%}

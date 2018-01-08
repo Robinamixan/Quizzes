@@ -1,14 +1,22 @@
+/*
 /authentication
 /registration
+/registration_confirm
+/check_email
+/reset_password
 ---------------- ROLE_GUEST
-/main
-/quizzes
-/quiz/{}
-/quiz/{}/question/{}
-/quiz/{}/results
-/users/top
+/quizzes/list
+/quizzes/game/quiz/{id_quiz}
+/quizzes/game/result/{id_passage}
+/user/profile
 ---------------- ROLE_USER
-/control/quizzes
-/control/quizzes/edit/{}
-/control/users
+/control
+/control/question/add
+/control/question/edit/{id_question}
+/control/question/delete/{id_question}
+/control/question/list
+/control/quiz/add
+/control/quiz/edit/{id_quiz}
+/control/quiz/delete/{id_quiz}
+/control/quiz/list
 ---------------- ROLE_ADMIN

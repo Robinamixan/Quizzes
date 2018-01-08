@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Passage;
 use AppBundle\Entity\Quiz;
+use AppBundle\Service\RatingPlayers;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,45 +13,28 @@ use Symfony\Component\HttpFoundation\Request;
 class QuizzesListController extends Controller
 {
     /**
-     * @Route("/quizzes", name="quizzes_list")
+     * @Route("/quizzes/list", name="quizzes_list")
      */
-    public function quizzesListAction(Request $request)
+    public function quizzesListAction(Request $request, RatingPlayers $rating_players, EntityManagerInterface $em)
     {
-        $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
 
         $qb1 = $em->createQueryBuilder();
         $qb1->select()
             ->from(Passage::class, 'p')
             ->leftJoin("p.quiz", "q")
+            ->leftJoin("p.condition", "c")
             ->leftJoin("p.user", "u")
             ->addSelect('q.id_quiz')
             ->addSelect($qb1->expr()->count('u.id_user') . 'AS users_amount')
             ->andWhere('q.flag_active=1')
+            ->andWhere('c.id_condition=3')
             ->addGroupBy('q.id_quiz')
         ;
         $query = $qb1->getQuery();
         $users_pas_quiz = $query->getResult();
 
-        $qb3 = $em->createQueryBuilder();
-        $qb3->select()
-            ->from(Passage::class, 'p')
-            ->leftJoin("p.user", "u")
-            ->leftJoin("p.results", "r")
-            ->leftJoin("r.answer", "a")
-            ->leftJoin("p.quiz", "q")
-            ->addSelect('q.id_quiz')
-            ->addSelect('p.id_passage')
-            ->addSelect($qb3->expr()->count('a.id_answer') . 'AS right_amount')
-            ->andWhere('q.flag_active=1')
-            ->andWhere('a.flag_right=1')
-            ->andWhere('u.id_user=' . $user->getIdUser())
-            ->addGroupBy('p.id_passage')
-        ;
-        $query = $qb3->getQuery();
-        $passeges = $query->getResult();
-
-        //var_dump($passeges); die();
+        $user_results = $rating_players->getListPlayerResults($user->getIdUser());
 
         $qb2 = $em->createQueryBuilder();
         $qb2->select()
@@ -78,7 +63,7 @@ class QuizzesListController extends Controller
             if (!$compare_counts) {
                 $quiz['users_amount'] = 0;
             }
-            foreach ($passeges as $pass_user) {
+            foreach ($user_results as $pass_user) {
                 if ($quiz['id_quiz'] == $pass_user['id_quiz']) {
                     $quiz['flag_passed'] = true;
                     $quiz['result'] = $pass_user['right_amount'];
@@ -92,18 +77,21 @@ class QuizzesListController extends Controller
                 $quiz['result'] = 0;
                 $quiz['id_passage'] = 0;
             }
+
+            $passages = $rating_players->getListQuizRating($quiz['id_quiz']);
+            if ($passages) {
+                $quiz['best_player'] = $passages[0]['username'];
+                $quiz['right_amount'] = $passages[0]['right_amount'];
+            }
             $results[] = $quiz;
 
         }
 
-        //var_dump($results); die();
-
-
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $results, /* query NOT result */
+            $results,
             $request->query->getInt('page', 1),
-            5/*limit per page*/
+            5
         );
 
         return $this->render('quizzes_pages/quizzes_list.html.twig', array(

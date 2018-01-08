@@ -27,7 +27,7 @@ class QuizForm extends AbstractType
             ->add('name', TextType::class, array(
                 'label' => false,
                 'attr' => array(
-                    'class'         => 'form-control quiz_form_quiz_description',
+                    'class'         => 'form-control quiz_form_quiz_name',
                     'placeholder'   => 'Quiz name',
                 )
             ))
@@ -41,8 +41,11 @@ class QuizForm extends AbstractType
             ))
 
             ->add('flag_active', CheckboxType::class, array(
-                'label' => 'Active',
-                'attr' => array('checked' => 'checked')
+                'label' => false,
+                'attr' => array(
+                    'checked' => 'checked',
+                    'hidden' => true,
+                    )
 
             ))
 
@@ -56,7 +59,12 @@ class QuizForm extends AbstractType
                 'allow_delete' => true,
             ))
 
-            ->add('save', SubmitType::class, array('label' => 'Create new Quiz'))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Create new Quiz',
+                'attr' => array(
+                    'class'         => 'btn btn-default',
+                )
+            ))
         ;
     }
 

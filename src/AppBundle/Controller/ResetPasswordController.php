@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class ResetPasswordController extends Controller
 {
     /**
-     * @Route("/check", name="check")
+     * @Route("/check_email", name="check")
      */
     public function checkEmailAction(Request $request, \Swift_Mailer $mailer)
     {

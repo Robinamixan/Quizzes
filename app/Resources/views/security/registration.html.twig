@@ -12,7 +12,7 @@
     <div class="col-md-4"></div>
 
     <div class="col-md-4">
-        <section class="registe-form">
+        <section class="register_form">
             <form class="form-signin" name='register_form' id='register_form' method='post' action='{{path('create')}}'>
                 {{ form_widget(form.username, {'attr': {
                     'title': 'Enter your username',
@@ -48,6 +48,7 @@
                 {{ form_errors(form.username, {'attr': {'class': 'text-danger'}}) }}
 
                 {{ form_row(form._token) }}
+                <br>
 
                 <button id="submitRegistration" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
             </form>
@@ -86,3 +87,15 @@
         confirm_password.onkeyup = validatePassword;
     </script>
 {% endblock javascripts %}
+
+{% block stylesheets %}
+    <style>
+        .register_form {
+            border: 2px solid grey;
+            border-radius: 15px;
+            background-color: #384452;
+            padding: 10px;
+
+        }
+    </style>
+{% endblock  stylesheets%}

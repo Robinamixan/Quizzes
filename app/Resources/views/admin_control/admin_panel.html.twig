@@ -9,18 +9,41 @@ Admin Panel
 
 
 {% block body %}
-    <a href="{{ path('add_question') }}" class="btn btn-default">Add question</a><br>
-    <a href="{{ path('add_quiz') }}" class="btn btn-default">Add quiz</a><br>
-    <a href="{{ path('admin_quiz_list') }}" class="btn btn-default">Quiz List</a><br>
-    <a href="{{ path('admin_question_list') }}" class="btn btn-default">Question List</a><br>
+
+    <div class="col-md-2">
+        <div class="control_panel">
+            <h4>Lists</h4>
+            <a href="{{ path('admin_question_list') }}" class="btn btn-default">Question List</a><br>
+            <a href="{{ path('admin_quiz_list') }}" class="btn btn-default">Quiz List</a><br>
+            <a href="{{ path('admin_user_list') }}" class="btn btn-default">Users List</a><br>
+            <h4>Add new</h4>
+            <a href="{{ path('add_question') }}" class="btn btn-default">Add question</a><br>
+            <a href="{{ path('add_quiz') }}" class="btn btn-default">Add quiz</a><br>
+        </div>
+    </div>
+    <div class="col-md-10">
+        {% block contain %}{% endblock %}
+    </div>
+
 {% endblock body %}
 
-
-{% block javascripts %}
-
-{% endblock javascripts %}
-
-
 {% block stylesheets %}
+    <style>
+        .control_panel {
+            border: 2px solid grey;
+            border-radius: 15px;
+            background-color: #384452;
+            padding: 5px;
+            padding-bottom: 10px;
+        }
 
+        h4 {
+            color: white !important;
+        }
+
+        .control_panel .btn {
+            min-width: 120px;
+        }
+    </style>
+    {% block containstylesheets %}{% endblock %}
 {% endblock stylesheets %}

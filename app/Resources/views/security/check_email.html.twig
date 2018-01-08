@@ -12,9 +12,8 @@
     <div class="col-md-4"></div>
 
     <div class="col-md-4">
-        <section class="registe-form">
-            <form class="form-signin" name='register_form' id='register_form' method='post' action='{{path('check')}}'>
-
+        <section class="check_form">
+            <form class="form-signin" name='check_form' id='check_form' method='post' action='{{path('check')}}'>
 
                 {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder':'Email'}}) }}
 
@@ -22,7 +21,9 @@
 
                 {{ form_row(form._token) }}
 
-                <button id="submitRegistration" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                <br>
+
+                <button id="submitRegistration" class="btn btn-lg btn-primary btn-block" type="submit">Send Email</button>
             </form>
         </section>
     </div>
@@ -41,3 +42,15 @@
         {% endif %}
     {% endspaceless %}
 {% endblock form_errors %}
+
+{% block stylesheets %}
+    <style>
+        .check_form {
+            border: 2px solid grey;
+            border-radius: 15px;
+            background-color: #384452;
+            padding: 10px;
+
+        }
+    </style>
+{% endblock  stylesheets%}

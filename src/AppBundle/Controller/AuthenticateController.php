@@ -11,9 +11,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthenticateController extends Controller
 {
     /**
-     * @Route("/login", name="login")
+     * @Route("/authentication", name="login")
      */
-    public function authenticateAction(Request $request, AuthenticationUtils $authUtils)
+    public function authenticateAction(AuthenticationUtils $authUtils)
     {
         $error = $authUtils->getLastAuthenticationError();
 

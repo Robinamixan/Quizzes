@@ -1,37 +1,46 @@
 {# templates/security/login.html.twig #}
 {# ... you will probably extend your base template, like base.html.twig #}
 
-{% extends 'template.html.twig' %}
+{% extends 'admin_control/admin_panel.html.twig' %}
 {% block title %}
-    List of Quizzes
+    List of Questions
 {% endblock title %}
 
-{% block body %}
+{% block contain %}
 
     <div id="grid_quizzes">
-
+        <h4>Questions</h4>
     </div>
 
-
-{% endblock body %}
+{% endblock contain %}
 
 {% block javascripts %}
     <script src="{{ asset('assets/js/jquery.ajaxgrid.js') }}"></script>
 <script>
-    $('#grid_quizzes').simplegrid({
+
+    $('#grid_quizzes').ajaxgrid({
         ajax_url: '{{ (path('question_list_ajax')) }}',
-        array_headers: ['ID', 'Text'],
-        array_field_filters: [['ID', 'Text', 'Answers'], ['text', 'text', 'text']],
+        array_sorted_fields: ['ID', 'Question Text'],
+        array_field_filters: [['ID', 'Question Text'], ['text', 'text']],
         notes_per_page: 10,
-        filter_active: false
+        filter_active: true,
+        url_notes_edit: ['{{ (path('edit_question')) }}', 'ID'],
+        url_notes_delete: ['{{ (path('delete_question')) }}', 'ID']
     });
+
 </script>
 
 {% endblock javascripts %}
 
-{% block stylesheets %}
+{% block containstylesheets %}
 
     <style>
+        #grid_quizzes {
+            border: 2px solid grey;
+            border-radius: 15px;
+            background-color: #384452;
+            padding: 5px;
+        }
 
         th {
             text-align: center !important;
@@ -42,7 +51,7 @@
         }
 
         .filters_panel {
-            display: inline-block;
+            display: block;
             background-color: white;
             padding: 5px;
             border: 1px solid black;
@@ -65,7 +74,7 @@
         }
 
         .panel_pagination {
-            display: inline-block;
+            display: block;
             padding: 5px;
             background-color: white;
             border: 1px solid black;
@@ -83,8 +92,6 @@
         .view_page {
             margin-right: 15px;
         }
-
-
     </style>
 
-{% endblock stylesheets %}
+{% endblock containstylesheets %}

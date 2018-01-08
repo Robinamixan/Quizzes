@@ -11,7 +11,10 @@ Results of Game
 {% block body %}
 
     <h2>Results - {{ passage.quiz.name}}</h2>
-    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        <a class="btn btn-default" href="{{ path('quizzes_list') }}">Return to list of quizzes</a>
+    </div>
 
     <div class="col-md-4">
         <h3>Answers</h3>
@@ -27,7 +30,6 @@ Results of Game
                         <div class="question_view_question text-left" id="{{ result.question.idQuestion }}" >{{ result.question.questionText }} - time<{{ result.time }}></div>
                         <div class="question_view_answer wrong_answer text-left">{{ result.answer.answerText }}</div>
                     {% endif %}
-
 
                 </li>
 
@@ -55,10 +57,6 @@ Results of Game
         </ul>
 
     </div>
-
-
-
-
 
 {% endblock body %}
 

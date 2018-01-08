@@ -6,6 +6,8 @@ use AppBundle\Entity\Answer;
 use AppBundle\Entity\Passage;
 use AppBundle\Entity\PassageCondition;
 use AppBundle\Entity\Quiz;
+use AppBundle\Service\RatingPlayers;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,11 +16,10 @@ use Symfony\Component\HttpFoundation\Request;
 class QuizGameController extends Controller
 {
     /**
-     * @Route("/game/quiz/{id_quiz}", name="game", requirements={"id"="\d+"})
+     * @Route("/quizzes/game/quiz/{id_quiz}", name="game", requirements={"id"="\d+"})
      */
-    public function gameAction(Request $request, int $id_quiz)
+    public function gameAction(int $id_quiz, EntityManagerInterface $em)
     {
-        $em = $this->getDoctrine()->getManager();
         $quiz = $this->getDoctrine()
             ->getRepository(Quiz::class)
             ->find($id_quiz);
@@ -46,11 +47,10 @@ class QuizGameController extends Controller
 
 
     /**
-     * @Route("/game/ajax_request", name="game_ajax")
+     * @Route("/quizzes/game/ajax_request", name="game_ajax")
      */
-    public function ajaxAction(Request $request)
+    public function ajaxAction(Request $request, EntityManagerInterface $em)
     {
-        $em = $this->getDoctrine()->getManager();
         $id_passage = $request->request->get('id_passage');
         $id_answer = $request->request->get('id_answer');
         $answer_time = $request->request->get('answer_time');
@@ -84,12 +84,10 @@ class QuizGameController extends Controller
 
 
     /**
-     * @Route("/game/result/{id_passage}", name="game_result", requirements={"id"="\d+"})
+     * @Route("/quizzes/game/result/{id_passage}", name="game_result", requirements={"id"="\d+"})
      */
-    public function resultAction(Request $request, int $id_passage)
+    public function resultAction(int $id_passage, RatingPlayers $rating_players, EntityManagerInterface $em)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $passage = $this->getDoctrine()
             ->getRepository(Passage::class)
             ->find($id_passage);
@@ -104,27 +102,7 @@ class QuizGameController extends Controller
 
         $results = $passage->getResults()->getValues();
 
-        $qb3 = $em->createQueryBuilder();
-        $qb3->select()
-            ->from(Passage::class, 'p')
-            ->leftJoin("p.user", "u")
-            ->leftJoin("p.results", "r")
-            ->leftJoin("r.answer", "a")
-            ->leftJoin("p.quiz", "q")
-            ->addSelect('u.username')
-            ->addSelect('p.id_passage')
-            ->addSelect($qb3->expr()->count('a.id_answer') . 'AS right_amount')
-            ->andWhere('q.flag_active=1')
-            ->andWhere('a.flag_right=1')
-            ->andWhere('q.id_quiz=' . $passage->getQuiz()->getIdQuiz())
-            ->addGroupBy('p.id_passage')
-            ->orderBy('right_amount', 'DESC')
-
-        ;
-        $query = $qb3->getQuery();
-        $passages = $query->getResult();
-
-        //var_dump($passeges); die();
+        $passages = $rating_players->getListQuizRating($passage->getQuiz()->getIdQuiz());
 
         return $this->render('quizzes_pages/game_results_quiz.html.twig', [
             'passage'               => $passage,

@@ -5,11 +5,13 @@
 {% endblock title %}
 
 {% block body %}
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8" style="border: #0000F0 solid 2px">
+
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8" >
+            <div id="list_quizzes" class="list_quizzes">
                 <div class="count">
-                    <h3 style="color: black;">All quizzes - {{ pagination.getTotalItemCount }}</h3>
+                    <h3>All quizzes - {{ pagination.getTotalItemCount }}</h3>
                 </div>
                 <div id="postlist">
                     {% for quiz in pagination %}
@@ -35,24 +37,30 @@
                                     {{ quiz.description }}
                                 </div>
                                 <div>
-                                   Users passed -
+                                    Users passed -
                                     {% if quiz.users_amount == null %}
-                                        0
+                                        <b>0</b>
                                     {% else %}
-                                        {{ quiz.users_amount }}
+                                        <b>{{ quiz.users_amount }}</b>
                                     {% endif %}
+                                </div>
+                                <div>
+                                    {% if quiz.users_amount != null %}
+                                        Best User - <b>{{ quiz.best_player }}</b> <{{ quiz.right_amount }}>
+                                    {% endif %}
+
                                 </div>
                             </div>
 
                             <div class="panel-footer" style="height: 50px; padding-top: 6px">
 
                                 {% if quiz.flag_passed %}
-                                    <p class="pull-left" style="background-color: green; padding: 5px; margin-top: 0; color: white;"> Passed </p>
-                                    <p class="pull-left" style="background-color: green; padding: 5px; margin-top: 0; color: white;"> Your result - {{ quiz.result }} </p>
-                                    <a class="btn btn-default pull-right" href="{{ path('game_result', {'id_passage': quiz.id_passage}) }}">Result</a>
+                                    <p class="pull-left label_info pass"> Passed </p>
+                                    <p class="pull-left label_info pass"> Your result - {{ quiz.result }} </p>
+                                    <a class="btn btn-info pull-right" href="{{ path('game_result', {'id_passage': quiz.id_passage}) }}">Result</a>
                                 {% else %}
-                                    <p class="pull-left" style="background-color: blue; padding: 5px; margin-top: 0; color: white;"> Not passed </p>
-                                    <a class="btn btn-default pull-right" href="{{ path('game', {'id_quiz': quiz.id_quiz}) }}">Start</a>
+                                    <p class="pull-left label_info nopass"> Not passed </p>
+                                    <a class="btn btn-primary pull-right" href="{{ path('game', {'id_quiz': quiz.id_quiz}) }}">Start</a>
                                 {% endif %}
 
                             </div>
@@ -60,18 +68,52 @@
 
                     {% endfor %}
                 </div>
+                {{ knp_pagination_render(pagination) }}
             </div>
 
-            <div class="col-md-2"></div>
         </div>
 
+        <div class="col-md-2"></div>
+    </div>
 
     {# display navigation #}
     <div class="navigation">
-        {{ knp_pagination_render(pagination) }}
+
     </div>
 
 {% endblock body %}
+
+{% block stylesheets %}
+    <style>
+        .list_quizzes {
+            border: 2px solid grey;
+            border-radius: 15px;
+            padding: 10px;
+            background-color: #384452;
+        }
+
+        #list_quizzes .count h3 {
+            color: white;
+        }
+
+        .label_info {
+            border: 1px solid grey;
+            border-radius: 5px;
+            padding: 5px;
+            margin-top: 0;
+            margin-right: 3px;
+            color: white;
+        }
+
+        .label_info.pass {
+            background-color: green;
+        }
+
+        .label_info.nopass {
+            background-color: #0b6ec4;
+        }
+    </style>
+{% endblock  stylesheets%}
 
 
 

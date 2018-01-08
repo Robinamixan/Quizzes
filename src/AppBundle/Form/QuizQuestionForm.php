@@ -24,8 +24,8 @@ class QuizQuestionForm extends AbstractType
             ->add('question_text', TextareaType::class, array(
                 'label' => false,
                 'attr' => array(
-                    'class'         => 'form-control quiz_form_question_text',
-                    'placeholder'   => 'Question text',
+                    'class'         => 'quiz_form_question_text',
+                    'hidden' => true,
                 )
             ))
             ->add('id_question', TextType::class, array(
