@@ -53,7 +53,6 @@
 {% block javascripts %}
     <script src="{{ asset('assets/js/select2.min.js') }}"></script>
     <script>
-
         var $collectionHolder;
         var $newLinkLi = $('<li></li>').append();
 
@@ -107,7 +106,7 @@
                 addTagFormDeleteLink($newFormLi);
             }
         }
-        
+
         function checkQuestions($id_question) {
             $unique = true;
             $('.quiz_form_id_question').each(function (index) {

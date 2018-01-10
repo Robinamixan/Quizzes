@@ -43,10 +43,10 @@
         </div>
         <div class="navbar-collapse collapse navbar-right">
             <ul class="nav navbar-nav">
-                {% if is_granted("ROLE_USER") %}
-                    {% include 'including/users_panel_list.html.twig' with {'role' : 'user'} %}
-                {% elseif is_granted("ROLE_ADMIN") %}
+                {% if is_granted("ROLE_ADMIN") %}
                     {% include 'including/users_panel_list.html.twig' with {'role' : 'admin'} %}
+                {% elseif is_granted("ROLE_USER") %}
+                    {% include 'including/users_panel_list.html.twig' with {'role' : 'user'} %}
                 {% else %}
                     <li><a href="{{ path('login') }}">Log in</a></li>
                     <li><a href="{{ path('registration') }}">Create account</a></li>

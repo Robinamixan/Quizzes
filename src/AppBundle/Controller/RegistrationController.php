@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Access;
 use AppBundle\Entity\User;
 use AppBundle\Form\RegistrationForm;
+use AppBundle\Service\SecurityMailer;
 use Proxies\__CG__\AppBundle\Entity\UserCondition;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -37,7 +38,7 @@ class RegistrationController extends Controller
      *
      * @Route("/create", name="create")
      */
-    public function createAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, \Swift_Mailer $mailer)
+    public function createAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, SecurityMailer $securityMailer)
     {
         $em   = $this->getDoctrine()->getManager();
         $form = $this->createForm(RegistrationForm::class, new User());
@@ -46,7 +47,7 @@ class RegistrationController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
-            $token = md5($user->getEmail().time());
+            $token = md5($user->getEmail().rand().time());
             $user->setToken($token);
 
             $password = $passwordEncoder->encodePassword($user, $user->getPassword());
@@ -66,22 +67,7 @@ class RegistrationController extends Controller
             $em->persist($user);
             $em->flush();
 
-            $url_confirm = $this->generateUrl('registration_confirm');
-            $message = (new \Swift_Message('Registration Confirmation'))
-                ->setFrom('send@example.com')
-                ->setTo($user->getEmail())
-                ->setBody(
-                    $this->renderView(
-                        'emails/confirm_registration.html.twig',
-                        array(
-                            'token' => $token,
-                            'url_confirm' => $url_confirm,
-                        )
-                    ),
-                    'text/html'
-                )
-            ;
-            $mailer->send($message);
+            $securityMailer->sendMailConfirmRegistration($user);
 
             $url = $this->generateUrl('login');
             return $this->redirect($url);
@@ -102,7 +88,6 @@ class RegistrationController extends Controller
     {
         $em   = $this->getDoctrine()->getManager();
         $token = $request->query->get('token');
-        $user = new User();
         $user = $this->getDoctrine()
             ->getRepository(User::class)
             ->findOneByToken($token);

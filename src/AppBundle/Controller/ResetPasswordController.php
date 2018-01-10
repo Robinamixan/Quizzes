@@ -6,9 +6,11 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Form\CheckEmailForm;
 use AppBundle\Form\ResetPasswordForm;
+use AppBundle\Service\SecurityMailer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class ResetPasswordController extends Controller
@@ -16,7 +18,7 @@ class ResetPasswordController extends Controller
     /**
      * @Route("/check_email", name="check")
      */
-    public function checkEmailAction(Request $request, \Swift_Mailer $mailer)
+    public function checkEmailAction(Request $request, SecurityMailer $securityMailer)
     {
         $form = $this->createForm(CheckEmailForm::class);
 
@@ -31,21 +33,7 @@ class ResetPasswordController extends Controller
                 ->findOneByEmail($form_data['email']);
 
             if($user) {
-                $url_reset = $this->generateUrl('reset_password');
-                $message = (new \Swift_Message('Reset Password'))
-                    ->setFrom('send@example.com')
-                    ->setTo($user->getEmail())
-                    ->setBody(
-                        $this->renderView(
-                            'emails/reset_password.html.twig',
-                            array(
-                                'token' => $user->getToken(),
-                                'url_reset' => $url_reset,
-                            )
-                        ),
-                        'text/html'
-                    );
-                $mailer->send($message);
+                $securityMailer->sendMailResetPassword($user);
             }
             $url = $this->generateUrl('homepage');
             return $this->redirect($url);
@@ -66,7 +54,6 @@ class ResetPasswordController extends Controller
     {
         $em   = $this->getDoctrine()->getManager();
         $token = $request->query->get('token');
-        $user = new User();
         $user = $this->getDoctrine()
             ->getRepository(User::class)
             ->findOneByToken($token);

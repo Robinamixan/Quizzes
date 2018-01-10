@@ -7,9 +7,6 @@ security:
         our_db_provider:
                     entity:
                         class: AppBundle:User
-                        property: username
-                        # if you're using multiple entity managers
-                        # manager_name: customer
 
     encoders:
         AppBundle\Entity\User:
@@ -41,10 +38,11 @@ security:
             logout:
                 path:   /logout
                 target: /
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
 
     access_control:
             # require ROLE_ADMIN for /admin*
             - { path: ^/control, roles: ROLE_ADMIN }
-            - { path: ^/user, roles: ROLE_ADMIN }
             - { path: ^/quizzes, roles: ROLE_USER }
             - { path: ^/user, roles: ROLE_USER }

@@ -38,6 +38,8 @@ class RatingPlayers
             ->andWhere('q.id_quiz=' . $id_quiz)
             ->addGroupBy('p.id_passage')
             ->orderBy('right_amount', 'DESC')
+            ->setFirstResult( 0 )
+            ->setMaxResults( 10 )
         ;
         $query = $qb3->getQuery();
         $passages = $query->getResult();
@@ -55,6 +57,7 @@ class RatingPlayers
             ->leftJoin("r.answer", "a")
             ->leftJoin("p.quiz", "q")
             ->addSelect('q.id_quiz')
+            ->addSelect('q.name')
             ->addSelect('p.id_passage')
             ->addSelect($qb3->expr()->count('a.id_answer') . 'AS right_amount')
             ->andWhere('q.flag_active=1')

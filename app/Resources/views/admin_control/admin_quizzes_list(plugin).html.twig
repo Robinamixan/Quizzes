@@ -23,7 +23,7 @@
         ajax_url: '{{ (path('quiz_list_ajax')) }}',
         array_sorted_fields: ['ID', 'Name', 'Date of create', 'Description', 'Status'],
         array_field_filters: [['ID', 'Name', 'Date of create'], ['text', 'text', 'date']],
-        notes_per_page: 10,
+        notes_per_page: 4,
         filter_active: true,
         url_notes_edit: ['{{ (path('edit_quiz')) }}', 'ID'],
         url_notes_delete: ['{{ (path('delete_quiz')) }}', 'ID']
@@ -34,13 +34,13 @@
 {% endblock javascripts %}
 
 {% block containstylesheets %}
-
     <style>
         #grid_quizzes {
             border: 2px solid grey;
             border-radius: 15px;
             background-color: #384452;
             padding: 5px;
+            margin-bottom: 30px;
         }
 
         .filter {
@@ -83,7 +83,7 @@
         }
 
         .panel_pagination {
-            display: inline-block;
+            display: block;
             padding: 5px;
             background-color: white;
             border: 1px solid black;
