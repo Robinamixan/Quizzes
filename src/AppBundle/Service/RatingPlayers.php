@@ -62,8 +62,8 @@ class RatingPlayers
             ->addSelect($qb3->expr()->count('a.id_answer') . 'AS right_amount')
             ->andWhere('q.flag_active=1')
             ->andWhere('a.flag_right=1')
-            ->andWhere('c.id_condition=3')
-            ->andWhere('u.id_user=' . $id_user)
+            ->andWhere('c.id_condition=2')
+            ->andWhere('u.id=' . $id_user)
             ->addGroupBy('p.id_passage')
         ;
         $query = $qb3->getQuery();

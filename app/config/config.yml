@@ -82,3 +82,40 @@ knp_paginator:
     template:
         pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig     # sliding pagination controls template
         sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig
+
+nelmio_api_doc: ~
+
+fos_rest:
+    param_fetcher_listener: true
+    body_listener: true
+
+    routing_loader:
+        default_format: json                          # All responses should be JSON formated
+        include_format: true                           # We do not include format in request, so that all responses
+                                                        # will eventually be JSON formated
+    format_listener:
+        rules:
+            - { path: '^/api', priorities: [ 'xml', 'json'], fallback_format: json, prefer_extension: false }
+            - { path: '^/', priorities: [ 'text/html', '*/*'], fallback_format: html, prefer_extension: true }
+    view:
+        view_response_listener: twig
+
+
+fos_user:
+    db_driver: orm
+    firewall_name: api                                  # Seems to be used when registering user/reseting password,
+                                                        # but since there is no "login", as so it seems to be useless in
+                                                        # our particular context, but still required by "FOSUserBundle"
+    user_class: AppBundle\Entity\User
+    from_email:
+        address: "robinamixan171@gmail.com"
+        sender_name: "No Reply"
+
+fos_oauth_server:
+    db_driver:           orm
+    client_class:        AppBundle\Entity\Client
+    access_token_class:  AppBundle\Entity\AccessToken
+    refresh_token_class: AppBundle\Entity\RefreshToken
+    auth_code_class:     AppBundle\Entity\AuthCode
+    service:
+        user_provider: fos_user.user_provider.username

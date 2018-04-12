@@ -44,11 +44,11 @@ class AdminUserListController extends Controller
 
         foreach ($users as $user) {
             $temp_array = [];
-            $temp_array['ID'] = $user[0]->getIdUser();
+            $temp_array['ID'] = $user[0]->getId();
             $temp_array['Username'] = $user[0]->getUsername();
             $temp_array['Email'] = $user[0]->getEmail();
             $temp_array['Full Name'] = $user[0]->getFullName();
-            $temp_array['Access'] = $user['access_name'];
+            $temp_array['Access'] = $user[0]->getRoles()[0];
             $temp_array['Condition'] = $user['condition_name'];
             $resultArray[] = $temp_array;
         }

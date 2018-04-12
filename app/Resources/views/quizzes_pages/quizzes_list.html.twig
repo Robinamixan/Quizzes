@@ -83,6 +83,45 @@
 
 {% endblock body %}
 
+{% block javascripts %}
+
+    <script>
+
+        jQuery(document).ready(function()
+        {
+
+            {#$.ajax({#}
+                {#url: '{{ path('apihello') }}',#}
+                {#type: "POST",#}
+                {#headers: { 'Authorization': 'Bearer NDkwYjBmNmU5ZTNlMWIxMTdjYjRjOGEzODVmOTgzM2Q5MmEyMWE3MmUxMzg5ODI2ZjQwYmU0ZTYzMGJmYmExNA' },#}
+                {#success: function (data)#}
+                {#{#}
+                    {#console.log(data);#}
+                {#}#}
+            {#});#}
+
+
+            // $.ajax({
+            //     url: 'http://quizzes.loc/oauth/v2/token',
+            //     type: "POST",
+            //     data: {
+            //         'grant_type': 'refresh_token',
+            //         'client_id':'1_3bcbxd9e24g0gk4swg0kwgcwg4o8k8g4g888kwc44gcc0gwwk4',
+            //         'client_secret':'4ok2x70rlfokc8g0wws8c8kwcokw80k44sg48goc0ok4w0so0k',
+            //         'refresh_token':'ZDFiYWNkM2Y0ZTc3MmNmZDE2YmU0ZDM1MTY4NmUzNTY1ZjIzN2U0ZGQ5NjhlYjY5OTJlM2U0MTE0ODU3NzJjNQ'
+            //     },
+            //     success: function (data)
+            //     {
+            //         console.log(data);
+            //     }
+            // });
+
+        })
+
+    </script>
+
+{% endblock %}
+
 {% block stylesheets %}
     <style>
         .list_quizzes {

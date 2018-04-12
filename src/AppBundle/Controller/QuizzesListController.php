@@ -26,15 +26,15 @@ class QuizzesListController extends Controller
             ->leftJoin("p.condition", "c")
             ->leftJoin("p.user", "u")
             ->addSelect('q.id_quiz')
-            ->addSelect($qb1->expr()->count('u.id_user') . 'AS users_amount')
+            ->addSelect($qb1->expr()->count('u.id') . 'AS users_amount')
             ->andWhere('q.flag_active=1')
-            ->andWhere('c.id_condition=3')
+            ->andWhere('c.id_condition=2')
             ->addGroupBy('q.id_quiz')
         ;
         $query = $qb1->getQuery();
         $users_pas_quiz = $query->getResult();
 
-        $user_results = $rating_players->getListPlayerResults($user->getIdUser());
+        $user_results = $rating_players->getListPlayerResults($user->getId());
 
         $qb2 = $em->createQueryBuilder();
         $qb2->select()

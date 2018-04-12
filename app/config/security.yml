@@ -1,19 +1,38 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
-security:
+#security:
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+#    providers:
+
+#
+#    encoders:
+#        AppBundle\Entity\User:
+#            algorithm: bcrypt
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: sha512
+
     providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username        # fos_user.user_provider.username_email does not seem to work (OAuth-spec related ("username + password") ?)
         our_db_provider:
                     entity:
                         class: AppBundle:User
 
-    encoders:
-        AppBundle\Entity\User:
-            algorithm: bcrypt
-
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
+        oauth_token:                                   # Everyone can access the access token URL.
+            pattern: ^/oauth/v2/token
+            security: false
+        api:
+            provider: fos_userbundle
+            pattern: ^/api                             # All URLs are protected
+            fos_oauth: true                            # OAuth2 protected resource
+            stateless: true                            # Do no set session cookies
+            anonymous: false                           # Anonymous access is not allowed
+
+#    firewalls:
+#        # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -22,7 +41,7 @@ security:
             anonymous: ~
 
             pattern:    ^/
-            provider: our_db_provider
+            provider: fos_userbundle
             logout_on_user_change: true
             # activate different ways to authenticate
 
@@ -41,8 +60,8 @@ security:
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER
 
-    access_control:
-            # require ROLE_ADMIN for /admin*
-            - { path: ^/control, roles: ROLE_ADMIN }
-            - { path: ^/quizzes, roles: ROLE_USER }
-            - { path: ^/user, roles: ROLE_USER }
+#    access_control:
+#            # require ROLE_ADMIN for /admin*
+#            - { path: ^/control, roles: ROLE_ADMIN }
+#            - { path: ^/quizzes, roles: ROLE_USER }
+#            - { path: ^/user, roles: ROLE_USER }

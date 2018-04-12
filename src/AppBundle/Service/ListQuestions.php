@@ -56,7 +56,7 @@ class ListQuestions
     public function getCountQuestions(array $filters)
     {
         $qb2 = $this->em->createQueryBuilder();
-        $qb2->select('q')
+        $qb2->select()
             ->from(Question::class, 'q')
             ->addSelect($qb2->expr()->count('q.id_quetion') . 'AS all_notes')
         ;
