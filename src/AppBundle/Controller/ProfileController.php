@@ -16,10 +16,8 @@ class ProfileController extends Controller
     {
         $user = $this->getUser();
 
-        $user_results = $rating_players->getListPlayerResults($user->getIdUser());
-        return $this->render('security/profile.html.twig', array(
-            'results' => $user_results
-        ));
+//        $user_results = $rating_players->getListPlayerResults($user->getId());
+        return $this->render('quiz_game/game_vue.html.twig');
     }
 
 
