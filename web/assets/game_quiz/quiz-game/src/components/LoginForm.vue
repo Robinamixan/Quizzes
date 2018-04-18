@@ -1,5 +1,6 @@
 <template>
     <div class="login_panel">
+        <div id="error_message">{{error_message}}</div>
         <form id="login_form">
             <input
                     type="text"
@@ -27,8 +28,10 @@
 
             </div>
         </form>
-        <button class="btn btn-lg btn-primary btn-block" @click="requestLogin">Sign in</button>
-        <button class="btn btn-default" @click="testConnection">Test Connection</button>
+        <div id="login_buttons">
+            <button class="btn btn-lg btn-primary btn-block" @click="requestLogin">Sign in</button>
+            <button class="btn btn-default" @click="testConnection">Test Connection</button>
+        </div>
         <!--/api/users/registration-->
     </div>
 </template>
@@ -47,7 +50,9 @@
                     client_secret: '4ok2x70rlfokc8g0wws8c8kwcokw80k44sg48goc0ok4w0so0k',
                     username: 'admin',
                     password: 'admin',
-                }
+                },
+                error_message: ''
+
             }
         },
         methods: {
@@ -65,11 +70,39 @@
                 )
                   .then(
                     response => {
+                        this.error_message = '';
                         this.$globalVariables.error_access = false;
                         this.$globalVariables.access_data = response.body;
+                        this.requestUserProfile(this.request_login_data.username);
                     },
                     error => {
                         this.$globalVariables.error_access = true;
+                        this.error_message = error.body.error_description;
+                        console.error(error);
+                    }
+                  );
+            },
+            requestUserProfile(username)
+            {
+                this.$http.get(
+                  'http://quizzes.loc/api/users/' + username + '/profile',
+                  {
+                      params: {},
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': 'Bearer ' + this.$globalVariables.access_data.access_token,
+                      },
+                      emulateJSON: true
+                  }
+                )
+                  .then(
+                    response => {
+                        console.log(response.body);
+                        this.$globalVariables.user_data.username = response.body.username;
+                        this.$globalVariables.user_data.full_name = response.body.full_name;
+                        this.$globalVariables.user_data.email = response.body.email;
+                    },
+                    error => {
                         console.error(error);
                     }
                   );
@@ -110,7 +143,7 @@
         align-items: center;
     }
 
-    #login_form {
+    #login_form, #login_buttons {
         width: 50%;
     }
 </style>

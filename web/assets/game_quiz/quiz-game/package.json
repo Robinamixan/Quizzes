@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.6",
+    "chownr": "^1.0.1",
+    "core-js": "^2.5.5",
     "sha1": "^1.1.1",
     "vue": "^2.5.2",
     "vue-password": "^1.1.2",
@@ -47,6 +49,7 @@
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-date-filter": "^1.0.1",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",

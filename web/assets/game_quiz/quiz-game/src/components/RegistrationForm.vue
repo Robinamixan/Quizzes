@@ -70,13 +70,9 @@
 </template>
 
 <script>
-    import VuePassword from 'vue-password'
 
     export default {
         name: 'RegistrationForm',
-        components: {
-            VuePassword
-        },
         data()
         {
             return {
